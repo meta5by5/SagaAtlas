@@ -1,0 +1,104 @@
+{
+  "files": [
+    {
+      "name": "5PFH Planetfall 1.2",
+      "path": "assets/docs/5PFH Planetfall 1.2.pdf",
+      "tags": ["5pfh", "planetfall", "rules"]
+    },
+    {
+      "name": "5PFH 3E Compendium",
+      "path": "assets/docs/5PFH-3e-Compendium-Includes-Bug-Hunt.pdf",
+      "tags": ["5pfh", "compendium", "rules"]
+    },
+    {
+      "name": "Five Parsecs From Home v3",
+      "path": "assets/docs/5PFH-Five-Parsecs-From-Home-v3.pdf",
+      "tags": ["5pfh", "rules"]
+    },
+    {
+      "name": "Alien Breeds",
+      "path": "assets/docs/Alien-Breeds3.pdf",
+      "tags": ["hostile", "npc", "creatures"]
+    },
+    {
+      "name": "Colony Builder",
+      "path": "assets/docs/colony-builder4.pdf",
+      "tags": ["hostile", "colony", "worldbuilding"]
+    },
+    {
+      "name": "Crew Expendable",
+      "path": "assets/docs/Crew_Expendable3.pdf",
+      "tags": ["hostile", "careers", "crew"]
+    },
+    {
+      "name": "Explorers",
+      "path": "assets/docs/EXPLORERS-2.pdf",
+      "tags": ["hostile", "exploration"]
+    },
+    {
+      "name": "HOSTILE Tech",
+      "path": "assets/docs/HOSTILE-TECH2.pdf",
+      "tags": ["hostile", "technology", "equipment"]
+    },
+    {
+      "name": "Ghost Ship",
+      "path": "assets/docs/HOSTILE_SHORTS-001GhostShip.pdf",
+      "tags": ["hostile", "adventure", "scenario"]
+    },
+    {
+      "name": "Snakehead",
+      "path": "assets/docs/HOSTILE_SHORTS-002Snakehead.pdf",
+      "tags": ["hostile", "adventure", "scenario"]
+    },
+    {
+      "name": "Repellant",
+      "path": "assets/docs/HOSTILE_SHORTS-003Repellant.pdf",
+      "tags": ["hostile", "adventure", "scenario"]
+    },
+    {
+      "name": "One Of Us",
+      "path": "assets/docs/HOSTILE_SHORTS-005OneOfUs.pdf",
+      "tags": ["hostile", "adventure", "scenario"]
+    },
+    {
+      "name": "Introduction to HOSTILE",
+      "path": "assets/docs/Introduction_to_HOSTILE3.pdf",
+      "tags": ["hostile", "core", "rules"]
+    },
+    {
+      "name": "Ironsworn Starforged Rulebook",
+      "path": "assets/docs/Ironsworn-Starforged-rulebook.pdf",
+      "tags": ["starforged", "core", "rules"]
+    },
+    {
+      "name": "Marine Character Sheet",
+      "path": "assets/docs/marine-sheet.pdf",
+      "tags": ["hostile", "character-sheet", "marines"]
+    },
+    {
+      "name": "Marine Corps",
+      "path": "assets/docs/marinecorps8.pdf",
+      "tags": ["hostile", "marines", "military"]
+    },
+    {
+      "name": "Starsmith Assets",
+      "path": "assets/docs/Starsmith-Assets-Mar-5-23.pdf",
+      "tags": ["starforged", "starsmith", "assets"]
+    },
+    {
+      "name": "Starsmith Expanded Oracles",
+      "path": "assets/docs/Starsmith-Expanded-Oracles-May-15-23.pdf",
+      "tags": ["starforged", "starsmith", "oracles"]
+    },
+    {
+      "name": "Tool Kit",
+      "path": "assets/docs/tool-kit9.pdf",
+      "tags": ["hostile", "equipment", "tools"]
+    },
+    {
+      "name": "Starforged Reference Guide",
+      "path": "assets/docs/_ironsworn-starforged-reference-guide.pdf",
+      "tags": ["starforged", "reference", "rules"]
+    }
+  ]
+}

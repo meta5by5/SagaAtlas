@@ -1,0 +1,554 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content">
+  <title>Saga Atlas</title>
+  <link rel="stylesheet" href="./css/style.css?v=20260623-doclib">
+</head>
+<body>
+  <header class="app-header"><div><h1>Saga Atlas</h1><p>Worldbuilding and Handbook Reader for Sci-fi settings.</p></div><div class="header-actions"><div class="status-pill" id="saveStatus">Loading…</div><button id="openSettings" class="settings-gear" type="button" title="Settings" aria-label="Open settings">⚙</button></div></header>
+  <nav class="mobile-panel-tabs top-nav" aria-label="Panel controls">
+    <button id="openEntityListPanel" type="button" aria-controls="entityListPanel" title="Entities"><span class="top-nav-icon">☷</span><span class="top-nav-label">Entities</span></button>
+    <button id="openCrewLinkPanel" type="button" aria-controls="crewLinkPanel" title="Crew"><img class="top-nav-icon-img" src="./img/crew-link-icon.png" alt=""><span class="top-nav-label">Crew</span></button>
+    <button id="showJournalNav" type="button" aria-controls="outputPanel" title="Journal"><span class="top-nav-icon">🖋</span><span class="top-nav-label">Journal</span></button>
+    <button id="openOraclePanel" type="button" aria-controls="oraclePanel" title="Oracle"><span class="top-nav-icon">🎲</span><span class="top-nav-label">Oracle</span></button>
+    <button id="openGuidePanel" type="button" aria-controls="oraclePanel" title="Guide"><span class="top-nav-icon">📖</span><span class="top-nav-label">Guide</span></button>
+    <button id="openControlsPanel" type="button" aria-controls="controlsPanel" title="Builder"><span class="top-nav-icon">🎞️</span><span class="top-nav-label">Builder</span></button>
+    <button id="showSceneElementsNav" type="button" aria-controls="outputPanel" title="Elements"><span class="top-nav-icon">▤</span><span class="top-nav-label">Elements</span></button>
+    <button id="openLivingShipPanel" type="button" aria-controls="livingShipPanel" title="Ship"><img class="top-nav-icon-img" src="./img/ship-generator-icon.png" alt=""><span class="top-nav-label">Ship</span></button>
+  </nav>
+  <div id="panelBackdrop" class="panel-backdrop" hidden></div>
+  <main class="layout">
+    <section id="controlsPanel" class="panel controls left-view side-panel side-left" aria-label="Scene Builder">
+      <div class="left-tabs" role="tablist" aria-label="Left section views">
+        <button class="left-tab-button" type="button" data-left-tab="scene" title="Scene Builder"><span class="tab-icon">🎞️</span><span class="tab-label">Scene Builder</span></button>
+        <button class="left-tab-button" type="button" data-left-tab="crew" title="Crew Link"><img class="tab-icon crew-logo-img" src="./img/crew-link-icon.png" alt=""><span class="tab-label">Crew Link</span></button>
+        <button class="left-tab-button" type="button" data-left-tab="living" title="Ship Generator"><img class="tab-icon ship-logo-img" src="./img/ship-generator-icon.png" alt=""><span class="tab-label">Ship Generator</span></button>
+        <button class="left-tab-button" type="button" data-left-tab="entityList" title="Entity Directory"><span class="tab-icon">☷</span><span class="tab-label">Entity Directory</span></button>
+      </div>
+      <div class="panel-title-row"><h2>Scene Builder</h2><button class="close-panel secondary" type="button" data-close-panel>Close</button></div>
+      <label>Campaign / Region<input id="campaignName" placeholder="Frontier Reach, company route, colonial sector..."></label>
+      <div class="grid2"><label>Planet<select id="planet"></select></label><label>Biome<select id="biome"></select></label></div>
+      <div class="grid2"><label>Location Type<select id="locationType"></select></label><label>Immediate Surroundings<select id="surroundings"></select></label></div>
+      <div class="grid2"><label>Scene Intent<select id="intent"></select></label><label>Pacing<select id="pacing"></select></label></div>
+      <div class="grid2"><label>Scene Phase<select id="phase"></select></label><label>Threat Level<input id="threatLevel" type="number" min="0" max="10" step="1"></label></div>
+      <div class="grid2"><label>Mystery Level<input id="mysteryLevel" type="number" min="0" max="10" step="1"></label><label>Predictability<input id="predictability" type="range" min="0" max="100"><span id="predictabilityLabel"></span></label></div>
+      <label>Current Thread / Question<textarea id="currentThread" rows="3" placeholder="What is unresolved? What does the crew need next?"></textarea></label>
+      <div class="button-row"><button id="generateScene" type="button" title="Create a playable scene using the current mission, world, continuity, and campaign state.">Generate Scene</button><button id="advanceOnly" type="button" class="secondary" title="Advance the world, factions, threats, and mission timeline without generating a full scene.">Advance Campaign Clock</button></div>
+      <div class="button-row"><button id="generateMission" type="button" class="secondary">Mission Seed</button><button id="generateWorld" type="button" class="secondary">World Seed</button></div>
+      <details open><summary>Continuity Rules</summary><div class="rules"><label><input id="useContinuity" type="checkbox">Reuse previous scene elements</label><label><input id="escalateOnComplication" type="checkbox">Escalate after complications</label><label><input id="useConflictArchitecture" type="checkbox">Add stakes, opposition logic, and meaningful choice</label><label>Mission Seed<textarea id="missionSeed" rows="4" placeholder="Generate or paste the current mission seed here for continuity reference."></textarea></label><label>World Seed<textarea id="worldSeed" rows="4" placeholder="Generate or paste the current world / colony seed here for continuity reference."></textarea></label></div></details>
+    </section>
+    <section id="outputPanel" class="panel output" aria-label="Scene Elements and Journal">
+      <div class="center-top-row">
+        <h2 id="centerSectionTitle">Journal</h2>
+        <div class="center-tabs" role="tablist" aria-label="Center section tabs">
+          <button id="showJournalTab" class="tab-button active" type="button">Journal</button>
+          <button id="showCenterGuideTab" class="tab-button" type="button">Guide</button>
+          <button id="showOutputTab" class="tab-button" type="button">Scene Elements</button>
+        </div>
+        <div id="sceneTopActions" class="mini-buttons center-scene-actions" hidden>
+          <button id="copyScene" class="secondary compact-button icon-button" type="button" title="Copy" aria-label="Copy scene output"><img class="button-inline-icon" src="./img/copy-icon.png" alt=""></button>
+          <button id="addCurrentToJournal" class="secondary compact-button icon-only-button" type="button" title="Add to Journal" aria-label="Add to Journal"><img class="button-inline-icon" src="./img/add-journal-icon.png" alt=""></button>
+        </div>
+      </div>
+
+      <div id="centerGuideView" class="center-view center-guide-view">
+        <div class="section-header guide-library-header">
+          <h2>Guide</h2>
+          <button id="clearCenterGuideEditor" class="secondary compact-button" type="button">Clear</button>
+        </div>
+        <p class="small">Campaign table of contents and document links. Type <strong>@</strong> or drag a PDF from Documents into the editor to create a page link.</p>
+        <div class="format-toolbar compact-comment-toolbar guide-editor-toolbar" data-editor-toolbar="centerGuideEditor">
+          <button type="button" class="icon-button secondary" data-format="bold" title="Bold" aria-label="Bold">𝗕</button>
+          <button type="button" class="icon-button secondary" data-format="italic" title="Italic" aria-label="Italic">𝘐</button>
+          <button type="button" class="icon-button secondary" data-format="insertUnorderedList" title="Bullet list" aria-label="Bullet list">•</button>
+          <button type="button" class="icon-button secondary" data-format="insertOrderedList" title="Numbered list" aria-label="Numbered list">☷</button>
+          <button type="button" class="icon-button secondary" data-format="formatBlock" data-format-value="blockquote" title="Quote" aria-label="Quote">❝</button>
+          <button type="button" class="icon-button secondary" data-format="formatBlock" data-format-value="h2" title="Header" aria-label="Header">▣</button>
+          <button type="button" class="icon-button secondary" data-format="indent" title="Indent" aria-label="Indent">⇥</button>
+          <button type="button" class="icon-button secondary" data-format="outdent" title="Outdent" aria-label="Outdent">⇤</button>
+          <label class="icon-button secondary image-upload-button" title="Insert image" aria-label="Insert image">🖼<input type="file" accept="image/*" data-image-target="centerGuideEditor"></label>
+        </div>
+        <div id="centerGuideEditor" class="rich-editor guide-editor center-guide-editor" contenteditable="true" role="textbox" aria-multiline="true" data-placeholder="Example: Colony Builder @colony-builder.pdf p.44"></div>
+      </div>
+
+      <div id="currentOutputView" class="center-view active-view">
+        <article id="sceneCard" class="scene-card empty">Generate a scene to begin.</article>
+        <h2>Scene Log</h2>
+        <div class="button-row"><button id="undoScene" class="secondary">Undo Last</button><button id="clearLog" class="secondary">Clear Log</button></div>
+        <ol id="sceneLog" class="scene-log"></ol>
+      </div>
+
+      <div id="journalView" class="center-view">
+        <div id="journalList" class="journal-list"></div>
+        <label>Comment</label>
+        <div class="comment-tools-row">
+          <div class="format-toolbar compact-comment-toolbar" data-editor-toolbar="journalCommentEditor">
+            <button type="button" class="icon-button secondary" data-format="bold" title="Bold" aria-label="Bold">𝗕</button>
+            <button type="button" class="icon-button secondary" data-format="italic" title="Italic" aria-label="Italic">𝘐</button>
+            <button type="button" class="icon-button secondary" data-format="insertUnorderedList" title="Bullet list" aria-label="Bullet list">•</button>
+            <button type="button" class="icon-button secondary" data-format="insertOrderedList" title="Numbered list" aria-label="Numbered list">☷</button>
+            <button type="button" class="icon-button secondary" data-format="formatBlock" data-format-value="blockquote" title="Quote" aria-label="Quote">❝</button>
+            <button type="button" class="icon-button secondary" data-format="formatBlock" data-format-value="h2" title="Header" aria-label="Header">▣</button>
+            <button type="button" class="icon-button secondary" data-format="indent" title="Indent" aria-label="Indent">⇥</button>
+            <button type="button" class="icon-button secondary" data-format="outdent" title="Outdent" aria-label="Outdent">⇤</button>
+            <label class="icon-button secondary image-upload-button" title="Insert image" aria-label="Insert image">🖼<input type="file" accept="image/*" data-image-target="journalCommentEditor"></label>
+          </div>
+          <div class="comment-action-row comment-action-row-right">
+            <button id="commentDiceRollButton" class="secondary icon-button" type="button" title="Roll Starforged dice" aria-label="Roll Starforged dice">🎲</button>
+            <button id="clearJournalComment" class="secondary icon-button" type="button" title="Clear comment" aria-label="Clear comment editor"><img class="button-inline-icon" src="./img/delete-icon.png" alt=""></button>
+            <button id="addJournalComment" class="secondary icon-button add-comment-icon" type="button" title="Add to Journal" aria-label="Add to Journal"><img class="button-inline-icon" src="./img/add-journal-icon.png" alt=""></button>
+          </div>
+        </div>
+        <div id="journalCommentEditor" class="rich-editor" contenteditable="true" role="textbox" aria-multiline="true" data-placeholder="Add a note, interpretation, ruling, clue, or campaign comment..."></div>
+      </div>
+    </section>
+    <section id="oraclePanel" class="panel oracle-panel side-panel side-right" aria-label="Worldbuilding Oracles and Documents">
+      <div class="panel-title-row"><h2>Oracles</h2><button class="close-panel secondary" type="button" data-close-panel>Close</button></div>
+      <div class="oracle-right-tabs" role="tablist" aria-label="Right panel tabs">
+        <button id="showOracleLibraryTab" class="tab-button active" type="button">Oracles</button>
+        <button id="showGuideLibraryTab" class="tab-button" type="button">Guide</button>
+        <button id="showDocumentLibraryTab" class="tab-button" type="button">Documents</button>
+      </div>
+      <div id="oracleLibraryTab" class="oracle-right-tab active-oracle-tab">
+      <div class="section-header oracle-actions">
+        <p class="small">Oracle rolls append here until you clear them or refresh the page.</p>
+        <div class="mini-buttons">
+          <button id="copyOracleOutput" class="secondary icon-button" type="button" title="Copy" aria-label="Copy table output"><img class="button-inline-icon" src="./img/copy-icon.png" alt=""></button>
+          <button id="appendOracleToJournal" class="secondary icon-button" type="button" title="Add to Journal" aria-label="Add to Journal"><img class="button-inline-icon" src="./img/add-journal-icon.png" alt=""></button>
+          <button id="clearOracleOutput" class="secondary icon-button" type="button" title="Clear" aria-label="Clear table output"><img class="button-inline-icon" src="./img/delete-icon.png" alt=""></button>
+        </div>
+      </div>
+      <div id="oracleOutput" class="oracle-output" contenteditable="true" role="textbox" aria-multiline="true">Roll from the table tree.</div>
+
+      <div class="section-header oracle-tree-header">
+        <h2>Worldbuilding Oracles</h2>
+      </div>
+      <p class="small">Open folders by category, then roll a whole table or individual nested table.</p>
+      <div class="oracle-filter-row"><label class="oracle-filter-label">Filter Oracles<input id="oracleFilter" type="search" placeholder="Search oracle groups and tables..."></label><button id="collapseAllOracles" class="secondary icon-button" type="button" title="Collapse all Oracles" aria-label="Collapse all Oracle sections"><img class="button-inline-icon" src="./img/collapse-oracles-icon.png" alt=""></button></div>
+      <div id="oracleTree"></div>
+      </div>
+      <div id="documentLibraryTab" class="oracle-right-tab document-library-tab" hidden>
+        <div class="section-header document-library-header">
+          <h2>Document Library</h2>
+          <div class="document-upload-inline">
+            <label class="file-button secondary compact-upload-button" title="Upload PDF documents to local browser storage">Upload PDF<input id="documentPdfUpload" type="file" accept="application/pdf,.pdf" multiple></label>
+            <input id="documentDefaultTags" type="text" list="documentTagDatalist" placeholder="Tags for next upload...">
+            <datalist id="documentTagDatalist"></datalist>
+          </div>
+        </div>
+        <button id="toggleDocumentSearch" class="document-search-toggle" type="button" aria-expanded="false" aria-controls="documentSearchPanel">Search Documents</button>
+        <div id="documentSearchPanel" class="document-search-panel" hidden>
+          <input id="documentSearch" type="search" placeholder="Name or tag, e.g. colony, rules, sector..." aria-label="Search Documents">
+          <div id="documentTagFilterChips" class="document-tag-filter-chips" aria-label="Document tag filters"></div>
+        </div>
+        <div id="documentLibraryList" class="document-library-list"></div>
+      </div>
+      <div id="guideLibraryTab" class="oracle-right-tab guide-library-tab" hidden>
+        <div class="section-header guide-library-header">
+          <h2>Guide</h2>
+          <button id="clearGuideEditor" class="secondary compact-button" type="button">Clear</button>
+        </div>
+        <p class="small">Build a table of contents, rules index, or campaign guide. Type <strong>@</strong> to link an uploaded PDF to a specific page.</p>
+        <div class="format-toolbar compact-comment-toolbar guide-editor-toolbar" data-editor-toolbar="guideEditor">
+          <button type="button" class="icon-button secondary" data-format="bold" title="Bold" aria-label="Bold">𝗕</button>
+          <button type="button" class="icon-button secondary" data-format="italic" title="Italic" aria-label="Italic">𝘐</button>
+          <button type="button" class="icon-button secondary" data-format="insertUnorderedList" title="Bullet list" aria-label="Bullet list">•</button>
+          <button type="button" class="icon-button secondary" data-format="insertOrderedList" title="Numbered list" aria-label="Numbered list">☷</button>
+          <button type="button" class="icon-button secondary" data-format="formatBlock" data-format-value="blockquote" title="Quote" aria-label="Quote">❝</button>
+          <button type="button" class="icon-button secondary" data-format="formatBlock" data-format-value="h2" title="Header" aria-label="Header">▣</button>
+          <button type="button" class="icon-button secondary" data-format="indent" title="Indent" aria-label="Indent">⇥</button>
+          <button type="button" class="icon-button secondary" data-format="outdent" title="Outdent" aria-label="Outdent">⇤</button>
+          <label class="icon-button secondary image-upload-button" title="Insert image" aria-label="Insert image">🖼<input type="file" accept="image/*" data-image-target="guideEditor"></label>
+        </div>
+        <div id="guideEditor" class="rich-editor guide-editor" contenteditable="true" role="textbox" aria-multiline="true" data-placeholder="Example: Colony Builder @colony-builder.pdf p.44"></div>
+      </div>
+    </section>
+
+    <section id="documentViewerOverlay" class="document-viewer-overlay" aria-label="PDF document viewer" hidden>
+      <div class="document-viewer-card">
+        <div class="document-viewer-toolbar">
+          <div>
+            <h2 id="documentViewerTitle">Document Viewer</h2>
+            <p id="documentViewerMeta" class="small"></p>
+          </div>
+          <div class="mini-buttons document-viewer-actions">
+            <button id="documentViewerOpenNew" class="secondary compact-button" type="button">Open</button>
+            <button id="documentViewerClose" class="secondary icon-button" type="button" title="Close document viewer" aria-label="Close document viewer">×</button>
+          </div>
+        </div>
+        <div id="documentViewerFrameWrap" class="document-viewer-frame-wrap">
+          <iframe id="documentViewerFrame" class="document-viewer-frame" title="PDF viewer"></iframe>
+        </div>
+      </div>
+    </section>
+
+    <section id="crewLinkPanel" class="panel controls left-view crew-link-panel side-panel side-left" aria-label="Starforged Crew Link">
+      <div class="left-tabs" role="tablist" aria-label="Left section views">
+        <button class="left-tab-button" type="button" data-left-tab="scene" title="Scene Builder"><span class="tab-icon">🎞️</span><span class="tab-label">Scene Builder</span></button>
+        <button class="left-tab-button active" type="button" data-left-tab="crew" title="Crew Link"><img class="tab-icon crew-logo-img" src="./img/crew-link-icon.png" alt=""><span class="tab-label">Crew Link</span></button>
+        <button class="left-tab-button" type="button" data-left-tab="living" title="Ship Generator"><img class="tab-icon ship-logo-img" src="./img/ship-generator-icon.png" alt=""><span class="tab-label">Ship Generator</span></button>
+        <button class="left-tab-button" type="button" data-left-tab="entityList" title="Entity Directory"><span class="tab-icon">☷</span><span class="tab-label">Entity Directory</span></button>
+      </div>
+      <div class="panel-title-row"><h2>Crew Link</h2><button class="close-panel secondary" type="button" data-close-panel>Close</button></div>
+      <iframe title="Starforged Crew Link" src="https://starforged-crew-link.scottbenton.dev/" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+    </section>
+    <section id="livingShipPanel" class="panel controls left-view living-ship-panel side-panel side-left" aria-label="Lynx-Class Ship Procedural Generator">
+      <div class="left-tabs" role="tablist" aria-label="Left section views">
+        <button class="left-tab-button" type="button" data-left-tab="scene" title="Scene Builder"><span class="tab-icon">🎞️</span><span class="tab-label">Scene Builder</span></button>
+        <button class="left-tab-button" type="button" data-left-tab="crew" title="Crew Link"><img class="tab-icon crew-logo-img" src="./img/crew-link-icon.png" alt=""><span class="tab-label">Crew Link</span></button>
+        <button class="left-tab-button active" type="button" data-left-tab="living" title="Ship Generator"><img class="tab-icon ship-logo-img" src="./img/ship-generator-icon.png" alt=""><span class="tab-label">Ship Generator</span></button>
+        <button class="left-tab-button" type="button" data-left-tab="entityList" title="Entity Directory"><span class="tab-icon">☷</span><span class="tab-label">Entity Directory</span></button>
+      </div>
+      <div class="panel-title-row"><h2>🚀 Ship Generator</h2><button class="close-panel secondary" type="button" data-close-panel>Close</button></div>
+      <p class="small">Browser version of a Foundry VTT-style ship generator: configure a ship preset, generate decks/zones/hazards, then copy or send it to the Journal for final editing.</p>
+
+      <details open class="lynx-config-card">
+        <summary>⚙️ Ship Generation Config</summary>
+        <div class="grid2">
+          <label>Ship Name<input id="lynxShipName" placeholder="Lynx Rescue Ship"></label>
+          <label>Scene Preset<select id="lynxPreset"></select></label>
+        </div>
+        <div class="grid2">
+          <label>Deck Count<input id="lynxDecks" type="number" min="1" max="12" step="1"></label>
+          <label>Zones per Deck<input id="lynxZones" type="number" min="2" max="8" step="1"></label>
+        </div>
+        <div class="grid2">
+          <label>Threat Intensity<select id="lynxThreat"></select></label>
+          <label>Lighting Mode<select id="lynxLighting"></select></label>
+        </div>
+        <label>Mission / Situation<textarea id="lynxMission" rows="3" placeholder="Rescue survivors, board a derelict, escape a hostile breach..."></textarea></label>
+      </details>
+
+      <div class="button-row living-ship-actions lynx-actions lynx-actions-single">
+        <button id="lynxGenerate" type="button">🎲 Generate Ship</button>
+        <button id="lynxEvent" class="secondary" type="button">⚡ Gameplay Event</button>
+        <button id="lynxToJournal" class="secondary icon-only-button" type="button" title="Add to Journal Editor" aria-label="Add to Journal Editor"><img class="button-inline-icon" src="./img/add-journal-icon.png" alt=""></button>
+        <button id="lynxClearOutput" class="secondary" type="button"><img class="button-inline-icon" src="./img/delete-icon.png" alt=""> Clear</button>
+      </div>
+      <article id="lynxOutput" class="living-ship-output lynx-output">Configure the Lynx generator, then generate a modular ship interior.</article>
+    </section>
+    <section id="entityTrackerPanel" class="panel controls left-view entity-tracker-panel side-panel side-left" aria-label="Entity Tracker">
+      <div class="left-tabs" role="tablist" aria-label="Left section views">
+        <button class="left-tab-button" type="button" data-left-tab="scene" title="Scene Builder"><span class="tab-icon">🎞️</span><span class="tab-label">Scene Builder</span></button>
+        <button class="left-tab-button" type="button" data-left-tab="crew" title="Crew Link"><img class="tab-icon crew-logo-img" src="./img/crew-link-icon.png" alt=""><span class="tab-label">Crew Link</span></button>
+        <button class="left-tab-button" type="button" data-left-tab="living" title="Ship Generator"><img class="tab-icon ship-logo-img" src="./img/ship-generator-icon.png" alt=""><span class="tab-label">Ship Generator</span></button>
+        <button class="left-tab-button" type="button" data-left-tab="entityList" title="Entity Directory"><span class="tab-icon">☷</span><span class="tab-label">Entity Directory</span></button>
+      </div>
+      <div class="panel-title-row entity-title-row"><h2><span class="entity-icon entity-icon-tracker" aria-hidden="true">⬢</span> Entity Tracker</h2><div class="entity-title-actions"><button id="entityAddGeneric" class="secondary compact-button" type="button" title="Add entity">＋ Add entity</button><button class="close-panel secondary" type="button" data-close-panel>Close</button></div></div>
+      <p class="small">Track NPCs, locations, factions, and scene assets. Drag an entity from the directory onto the active card to create a relationship.</p>
+      <div class="entity-tracker-grid">
+        <aside class="entity-directory-panel entity-directory-panel-left">
+          <h3>Entity Directory</h3>
+          <label class="entity-filter-label">Filter Entities<input id="entityFilter" type="search" placeholder="Search entities and tags..."></label>
+          <div id="entityDirectory" class="entity-directory"></div>
+        </aside>
+        <article id="entityActiveCard" class="entity-active-card entity-editor-card"></article>
+      </div>
+    </section>
+    <section id="entityListPanel" class="panel controls left-view entity-list-panel active-left-view side-panel side-left" aria-label="Entity Directory">
+      <div class="left-tabs" role="tablist" aria-label="Left section views">
+        <button class="left-tab-button" type="button" data-left-tab="scene" title="Scene Builder"><span class="tab-icon">🎞️</span><span class="tab-label">Scene Builder</span></button>
+        <button class="left-tab-button" type="button" data-left-tab="crew" title="Crew Link"><img class="tab-icon crew-logo-img" src="./img/crew-link-icon.png" alt=""><span class="tab-label">Crew Link</span></button>
+        <button class="left-tab-button" type="button" data-left-tab="living" title="Ship Generator"><img class="tab-icon ship-logo-img" src="./img/ship-generator-icon.png" alt=""><span class="tab-label">Ship Generator</span></button>
+        
+        <button class="left-tab-button active" type="button" data-left-tab="entityList" title="Entity Directory"><span class="tab-icon">☷</span><span class="tab-label">Entity Directory</span></button>
+      </div>
+      <div class="panel-title-row entity-title-row"><h2><span class="entity-icon entity-icon-tracker" aria-hidden="true">☷</span> Entity Directory</h2><div class="entity-title-actions"><button class="close-panel secondary" type="button" data-close-panel>Close</button></div></div>
+      <p class="small">Search entities, drag them into editors to create entity links, or click an entity to open the editor over the workspace.</p>
+      <div class="entity-library-filter-row entity-list-filter-row">
+        <label class="entity-filter-label">Filter Entities<input id="entityListFilter" type="search" placeholder="Search entities and tags..."></label>
+        <button id="entityListAddEntity" class="secondary compact-button entity-library-add-button icon-only-button" type="button" title="Add New Entity" aria-label="Add New Entity"><img class="button-inline-icon" src="./img/add-journal-icon.png" alt=""></button>
+      </div>
+      <div id="entityListDirectory" class="entity-directory entity-list-directory"></div>
+    </section>
+    <div id="settingsBackdrop" class="settings-backdrop" hidden></div>
+    <aside id="settingsModal" class="settings-modal" role="dialog" aria-modal="true" aria-labelledby="settingsTitle" hidden>
+      <div class="settings-window">
+        <div class="panel-title-row settings-title-row"><h2 id="settingsTitle">⚙ Settings</h2><button id="closeSettings" class="secondary icon-button" type="button" title="Close settings" aria-label="Close settings">×</button></div>
+        <div class="settings-tabs" role="tablist" aria-label="Settings tabs"><button class="tab-button active" type="button" data-settings-tab="save">Save / Sync</button><button class="tab-button" type="button" data-settings-tab="general">General</button><button class="tab-button" type="button" data-settings-tab="appearance">Appearance</button><button class="tab-button" type="button" data-settings-tab="entity">Entity Defaults</button><button class="tab-button" type="button" data-settings-tab="dice">Dice Roller</button></div>
+        <section id="storagePanel" class="settings-section storage active-settings-section" data-settings-section="save" aria-label="Save and Sync"><div class="save-sync-body"><p class="small">Always autosaves to browser storage. On desktop Chrome/Edge, bind a campaign JSON file in a OneDrive-synced folder.</p><div class="button-column"><button id="exportJson">Export Campaign JSON</button><button id="exportJournalRichText" class="secondary" type="button">Export Journal</button><button id="exportJournalJson" class="secondary" type="button" title="Export Journal JSON">Export Journal JSON</button><label class="file-button secondary" title="Import Journal JSON">Import Journal JSON<input id="importJournalJson" type="file" accept=".json,application/json"></label><button id="exportEntitiesJson" class="secondary" type="button" title="Export Entities JSON">Export Entities JSON</button><label class="file-button secondary" title="Import Entities JSON">Import Entities JSON<input id="importEntitiesJson" type="file" accept=".json,application/json"></label><label class="file-button">Import Campaign JSON<input id="importJson" type="file" accept=".json,application/json"></label><button id="bindFile" class="secondary">Bind Save File / OneDrive Folder</button><button id="saveBoundFile" class="secondary">Save Bound File Now</button><button id="newCampaign" class="secondary">New Campaign</button></div><div class="sync-card"><h3>10-minute sync helper</h3><label><input id="autosaveBoundFile" type="checkbox">Autosave bound file every 10 minutes</label><p id="fileSupport" class="small"></p></div></div></section>
+        <section class="settings-section" data-settings-section="general" hidden>
+          <h3>General</h3>
+          <div class="settings-card docs-sync-settings">
+            <h4>Document Library Sync</h4>
+            <p class="small">Reads PDFs published in <code>/assets/docs</code> using <code>./assets/index.json</code> and also lets you upload PDFs into this browser's local storage for offline viewing. If a synced doc is opened on a computer without the local file, the app will prompt you to attach a local PDF copy.</p>
+            <button id="syncGithubDocsFolder" class="secondary compact-button" type="button" title="Read PDFs from ./assets/index.json">Sync Docs</button>
+            <p id="githubDocsStatus" class="small">Use <strong>Sync Docs</strong> to refresh PDFs published in <code>/assets/docs</code>. Local uploads remain in this browser only.</p>
+          </div>
+        </section>
+        <section class="settings-section" data-settings-section="appearance" hidden><h3>Appearance</h3><p class="small">Appearance options are reserved for future theme and layout controls.</p></section>
+        <section class="settings-section" data-settings-section="entity" hidden><h3>Entity Defaults</h3><p class="small">Entity defaults use your current tag lists, thumbnails, and relationship data.</p></section>
+        <section class="settings-section" data-settings-section="dice" hidden><h3>Dice Roller</h3><p class="small">The Starforged dice roller uses an action die plus stat against two challenge dice and shows a bottom-right result card.</p></section>
+      </div>
+    </aside>
+  </main>
+
+  <div id="sfRollToast" class="sf-roll-toast" aria-live="polite" aria-hidden="true">
+    <button id="sfToastImageToJournal" class="sf-toast-copy-image secondary icon-button" type="button" title="Copy dice card to Journal comment" aria-label="Copy dice card to Journal comment">🖼</button>
+    <article id="sfRollToastCard" class="sf-roll-card sf-roll-card-toast">
+      <div class="sf-roll-left">
+        <div class="sf-roll-stat" id="sfToastStat">EDGE</div>
+        <div class="sf-roll-action-line"><img class="sf-die-icon sf-d6-icon" src="./img/d6.png" alt="d6"><span id="sfToastActionFormula">2 + 2 = 4</span></div>
+        <div class="sf-roll-challenges"><img class="sf-die-icon sf-d10-icon" src="./img/d10.jpg" alt="d10"><span id="sfToastChallengeDice">9, 7</span></div>
+      </div>
+      <div class="sf-roll-outcome" id="sfToastOutcome">MISS</div>
+    </article>
+  </div>
+  <script src="./js/tables.js?v=20260623-doclib"></script><script src="./js/app.js?v=20260623-doclib"></script>
+
+<style id="entity-library-add-arrow-patch">
+  /* Recent entity row arrow/link styling */
+  .entity-history button,
+  .entity-history .entity-back-button,
+  .entity-history .entity-history-back,
+  .entity-history .entity-recent-back,
+  .entity-history [data-entity-back],
+  .entity-recent button,
+  .entity-breadcrumbs button,
+  .entity-active-card .entity-back-button,
+  .entity-active-card .entity-history button,
+  .entity-active-card .entity-recent button {
+    background: transparent !important;
+    border: 0 !important;
+    box-shadow: none !important;
+    color: #fff !important;
+    padding: 0 5px !important;
+    min-width: 0 !important;
+    width: auto !important;
+    max-width: none !important;
+    font-weight: 700 !important;
+  }
+  .entity-history button:hover,
+  .entity-recent button:hover,
+  .entity-breadcrumbs button:hover,
+  .entity-active-card .entity-history button:hover,
+  .entity-active-card .entity-recent button:hover {
+    background: transparent !important;
+    color: #fff !important;
+    text-decoration: underline !important;
+  }
+  .entity-library-filter-row,
+  .entity-directory-filter-row,
+  .entity-filter-row {
+    display: flex !important;
+    align-items: end !important;
+    gap: .5rem !important;
+    width: 100% !important;
+  }
+  .entity-library-filter-row label,
+  .entity-directory-filter-row label,
+  .entity-filter-row label {
+    flex: 1 1 auto !important;
+  }
+  #entityLibraryAddEntity,
+  #entityAddFromLibrary,
+  .entity-library-add-button {
+    flex: 0 0 auto !important;
+    margin-left: auto !important;
+    white-space: nowrap !important;
+  }
+</style>
+<script id="entity-library-add-arrow-patch-script">
+(function(){
+  function byId(id){ return document.getElementById(id); }
+
+  function inferVisibleEntityType(){
+    const activeSection =
+      document.querySelector('.entity-directory-section:not([hidden])') ||
+      document.querySelector('.entity-group:not([hidden])') ||
+      document.querySelector('.entity-directory-group:not([hidden])') ||
+      document.querySelector('[data-entity-type]:not([hidden])');
+
+    const text = (
+      (activeSection && (activeSection.getAttribute('data-entity-type') || activeSection.querySelector('h3,h4,summary')?.textContent)) ||
+      document.querySelector('.entity-directory h3,.entity-library h3,.entity-section-title')?.textContent ||
+      ''
+    ).toLowerCase();
+
+    if (text.includes('npc') || text.includes('character') || text.includes('person')) return 'npc';
+    if (text.includes('location')) return 'location';
+    if (text.includes('faction') || text.includes('org')) return 'faction';
+    if (text.includes('asset') || text.includes('vehicle') || text.includes('cargo')) return 'asset';
+    if (text.includes('lore') || text.includes('history') || text.includes('rumor') || text.includes('mystery')) return 'lore';
+
+    const row = document.querySelector('.entity-directory [data-entity-type], .entity-library [data-entity-type]');
+    if (row) return (row.getAttribute('data-entity-type') || 'npc').toLowerCase();
+
+    if (window.state && window.state.entities) {
+      const first = Object.values(window.state.entities)[0];
+      if (first && first.type) return String(first.type).toLowerCase();
+    }
+    return 'npc';
+  }
+
+  function labelForType(type){
+    const t = String(type || '').toLowerCase();
+    if (t === 'npc' || t === 'person' || t === 'character') return 'NPC';
+    if (t === 'location') return 'Location';
+    if (t === 'faction') return 'Faction';
+    if (t === 'asset') return 'Asset';
+    if (t === 'lore' || t === 'history' || t === 'rumor' || t === 'mystery') return 'Lore';
+    return 'Entity';
+  }
+
+  function addEntityOfVisibleType(){
+    const type = 'npc';
+
+    // Prefer native app functions when available. New generic entities always start as blank NPCs.
+    const candidates = [
+      'addEntity','createEntity','entityAdd','createNewEntity','addNewEntity',
+      'openEntityEditorForNew','newEntity'
+    ];
+    for (const fnName of candidates) {
+      if (typeof window[fnName] === 'function') {
+        try {
+          window[fnName](type);
+          setTimeout(function(){
+            if (typeof window.renderEntityDirectory === 'function') window.renderEntityDirectory();
+            if (typeof window.renderEntityLibrary === 'function') window.renderEntityLibrary();
+            if (typeof window.saveState === 'function') window.saveState();
+            const nameField = document.getElementById('entityName');
+            if (nameField) { nameField.focus(); nameField.select(); }
+          }, 50);
+          return;
+        } catch(e) {}
+      }
+    }
+
+    // Fallback: mutate common state shape and re-render if the app exposes state.
+    const id = 'ent_' + Date.now().toString(36) + '_' + Math.random().toString(36).slice(2,7);
+    const rec = {
+      id: id,
+      type: type,
+      name: '',
+      tags: [],
+      links: [],
+      overview: '',
+      revealed: '',
+      relationships: {}
+    };
+
+    try {
+      window.state = window.state || {};
+      if (Array.isArray(window.state.entities)) {
+        window.state.entities.push(rec);
+      } else {
+        window.state.entities = window.state.entities || {};
+        window.state.entities[id] = rec;
+      }
+      if (typeof window.renderEntityDirectory === 'function') window.renderEntityDirectory();
+      if (typeof window.renderEntityLibrary === 'function') window.renderEntityLibrary();
+      if (typeof window.setActiveEntity === 'function') window.setActiveEntity(id);
+      if (typeof window.openEntity === 'function') window.openEntity(id);
+      if (typeof window.saveState === 'function') window.saveState();
+    } catch(e) {
+      alert('Could not add entity automatically in this build.');
+      console.error(e);
+    }
+  }
+
+  function normalizeRecentArrows(){
+    const scopes = document.querySelectorAll('.entity-history,.entity-recent,.entity-breadcrumbs,.entity-active-card');
+    scopes.forEach(function(scope){
+      scope.querySelectorAll('button').forEach(function(btn){
+        const raw = (btn.textContent || '').trim();
+        if (/^(←|<|‹|⟵|Back)$/i.test(raw) || btn.className.toLowerCase().includes('back')) {
+          btn.textContent = '←';
+          btn.title = btn.title || 'Back';
+          btn.setAttribute('aria-label', 'Back');
+          btn.classList.add('entity-back-button');
+        }
+      });
+    });
+  }
+
+  function ensureEntityLibraryAddButton(){
+    const directory =
+      document.querySelector('#entityDirectory') ||
+      document.querySelector('.entity-directory') ||
+      document.querySelector('.entity-library');
+    if (!directory) return;
+
+    let filter =
+      document.querySelector('#entityFilter') ||
+      document.querySelector('#entityLibraryFilter') ||
+      directory.parentElement?.querySelector('input[type="search"]') ||
+      directory.parentElement?.querySelector('input[placeholder*="Filter" i]');
+
+    if (!filter) return;
+
+    const label = filter.closest('label') || filter.parentElement;
+    let row = label.closest('.entity-library-filter-row,.entity-directory-filter-row,.entity-filter-row');
+    if (!row) {
+      row = document.createElement('div');
+      row.className = 'entity-library-filter-row';
+      label.parentNode.insertBefore(row, label);
+      row.appendChild(label);
+    }
+
+    let btn = document.getElementById('entityLibraryAddEntity') || document.getElementById('entityAddFromLibrary');
+    if (!btn) {
+      btn = document.createElement('button');
+      btn.id = 'entityLibraryAddEntity';
+      btn.type = 'button';
+      btn.className = 'secondary compact-button entity-library-add-button';
+      btn.title = 'Add New Entity';
+      btn.setAttribute('aria-label','Add New Entity');
+      btn.classList.add('icon-only-button');
+      btn.innerHTML = '<img class="button-inline-icon" src="./img/add-journal-icon.png" alt="">';
+      row.appendChild(btn);
+      btn.addEventListener('click', addEntityOfVisibleType);
+    } else if (btn.parentElement !== row) {
+      row.appendChild(btn);
+    }
+
+    // Hide duplicate top-level Add Entity buttons outside the Entity Library filter row.
+    document.querySelectorAll('#entityAddGeneric, .entity-title-actions #entityAddGeneric').forEach(function(oldBtn){
+      oldBtn.style.display = 'none';
+    });
+  }
+
+  function runPatch(){
+    ensureEntityLibraryAddButton();
+    const listAdd = document.getElementById('entityListAddEntity');
+    if (listAdd && !listAdd.dataset.boundAddEntity) {
+      listAdd.dataset.boundAddEntity = '1';
+      listAdd.addEventListener('click', addEntityOfVisibleType);
+    }
+    normalizeRecentArrows();
+  }
+
+  document.addEventListener('DOMContentLoaded', runPatch);
+  document.addEventListener('click', function(){ setTimeout(runPatch, 25); }, true);
+  document.addEventListener('input', function(){ setTimeout(runPatch, 25); }, true);
+  setInterval(normalizeRecentArrows, 1000);
+})();
+</script>
+
+
+<style id="doc-title-entity-add-compact-patch">
+  .document-card-title,
+  .document-card-title-link {
+    font-weight: 400 !important;
+  }
+  #entityListAddEntity.entity-library-add-button,
+  #entityLibraryAddEntity.entity-library-add-button,
+  #entityAddFromLibrary.entity-library-add-button {
+    width: 2.05rem !important;
+    min-width: 2.05rem !important;
+    padding-left: .35rem !important;
+    padding-right: .35rem !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+  #entityListAddEntity .button-inline-icon,
+  #entityLibraryAddEntity .button-inline-icon,
+  #entityAddFromLibrary .button-inline-icon {
+    margin: 0 !important;
+  }
+</style>
+</body>
+</html>
