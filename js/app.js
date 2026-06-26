@@ -45,7 +45,7 @@ function rerollSegmentText(title){
   if(t.includes('world'))return 'Planetary Class: '+pick(getTable("Planets","Planetary Class"))+'\nPlanet Trait: '+pick(getTable("Planets","Planet Traits"))+'\nSettlement: '+pick(getTable("Settlements","Settlement Type"))+'\nAuthority: '+pick(getTable("Settlements","Authority"))+'\nDominant Faction: '+pick(getTable("Factions","Faction Type"));
   return pick(getTable("Core Oracles","Action"))+' / '+pick(getTable("Core Oracles","Theme"));
 }
-function describePressure(){if(state.threatLevel>=7)return"Everything feels exposed, watched, or already too late.";if(state.threatLevel>=4)return"There is enough pressure that lingering here has a cost.";if(state.mysteryLevel>=6)return"The scene feels wrong in a way that invites investigation.";return"For now, there is enough room to observe before danger closes in."}function continuityLine(){if(!state.sceneLog.length)return"This is the opening beat. Establish what feels normal before disrupting it.";const last=state.sceneLog[state.sceneLog.length-1];return`This follows from Scene ${last.number}. Carry forward one unresolved element from: ${last.summary}.`}function applyConsequence(consequence){if(consequence.includes("threat"))state.threatLevel=Math.min(10,state.threatLevel+1);if(consequence.includes("mystery"))state.mysteryLevel=Math.min(10,state.mysteryLevel+1);if(state.escalateOnComplication&&state.phase==="Complication")state.threatLevel=Math.min(10,state.threatLevel+1)}function advancePhase(afterScene){const order=["Setup","Approach","Discovery","Complication","Confrontation","Choice","Consequence","Transition"];const i=order.indexOf(state.phase);state.phase=order[(i+1)%order.length];if(afterScene&&state.phase==="Setup")state.pacing=state.threatLevel>=7?"Aftermath":"Calm";else if(afterScene&&state.threatLevel>=6)state.pacing="Dangerous";else if(afterScene&&["Complication","Confrontation","Choice"].includes(state.phase))state.pacing="Escalating"}function buildOracleTree(){const root=$("oracleTree");root.innerHTML="";const filter=(state.oracleFilter||"").trim().toLowerCase();const oracleLayout=[{label:"Core Oracles",children:["Core Oracles"]},{label:"Situations",children:["Campaign","Plot Engine","Missions","Miscellaneous","Danger Situations","Fear and Dread","Conflict Architecture","Space Encounters"]},{label:"NPCs and Orgs",children:["Characters","Factions","Creatures"]},{label:"Locations",children:["Settlements","Location Themes","Colonies and Expeditions","Districts","Starships","Derelicts","Planets","Vaults / Ruins"]}];const matches=(key,value,path)=>{const p=path.concat(key).join(" ").toLowerCase();if(!filter)return true;if(p.includes(filter))return true;if(Array.isArray(value))return value.some(v=>String(v).toLowerCase().includes(filter));return Object.entries(value).some(([ck,cv])=>matches(ck,cv,path.concat(key)))};const buildNode=(key,value,path)=>{if(!matches(key,value,path))return null;if(Array.isArray(value)){const row=document.createElement("div");row.className="table-row";const label=document.createElement("span");label.textContent=`${key} (${value.length})`;const btn=document.createElement("button");btn.className="tiny secondary";btn.textContent="🎲";btn.title="Roll";btn.setAttribute("aria-label","Roll");btn.onclick=()=>{recordOracleUse(path[0]||key);rollTable(path.concat(key),value)};row.appendChild(label);row.appendChild(btn);return row}const details=document.createElement("details");details.className="oracle-node";if(filter)details.open=true;const summary=document.createElement("summary");const label=document.createElement("span");label.textContent=key;const rollAll=document.createElement("button");rollAll.className="tiny secondary";rollAll.textContent="🎲🎲";rollAll.title="Roll group";rollAll.setAttribute("aria-label","Roll group");rollAll.onclick=e=>{e.preventDefault();e.stopPropagation();recordOracleUse(path[0]||key);rollGroup(path.concat(key),value)};summary.appendChild(label);summary.appendChild(rollAll);details.appendChild(summary);for(const[childKey,childValue]of Object.entries(value)){const child=buildNode(childKey,childValue,path.concat(key));if(child)details.appendChild(child)}return details};const buildParent=(parent)=>{if(parent.children.length===1&&parent.children[0]===parent.label){const value=TABLES[parent.label];return value?buildNode(parent.label,value,[]):null}const details=document.createElement("details");details.className="oracle-node oracle-parent";if(filter)details.open=true;const summary=document.createElement("summary");const label=document.createElement("span");label.textContent=parent.label;summary.appendChild(label);details.appendChild(summary);parent.children.forEach(groupName=>{const value=TABLES[groupName];if(!value)return;const node=buildNode(groupName,value,[parent.label]);if(node)details.appendChild(node)});return details.children.length>1?details:null};oracleLayout.forEach(parent=>{const node=buildParent(parent);if(node)root.appendChild(node)});if(!root.children.length){const empty=document.createElement("p");empty.className="small";empty.textContent="No oracle tables match the filter.";root.appendChild(empty)}}function collapseAllOracles(){document.querySelectorAll("#oracleTree details.oracle-node").forEach(node=>node.open=false);setStatus("Collapsed all Oracle sections")}function recordOracleUse(group){if(!group)return;if(!state.oracleUsage)state.oracleUsage={};state.oracleUsage[group]=(state.oracleUsage[group]||0)+1;saveState()}function appendOracleOutput(text){const box=$("oracleOutput");if(!box.dataset.hasRolls){box.textContent="";box.dataset.hasRolls="true"}box.textContent+=(box.textContent?"\n\n---\n":"")+text;box.scrollTop=box.scrollHeight}function rollTable(path,values){appendOracleOutput(`${path.join(" > ")}\n${pick(values)}`)}function rollGroup(path,group){const leaves=flattenKeys(group,path);let prefix=commonPathPrefix(leaves.map(t=>t.path));if(prefix.length===0)prefix=path;const lines=leaves.map(t=>`${t.path.slice(prefix.length).join(" > ")}: ${pick(t.values)}`);appendOracleOutput(`${prefix.join(" > ")}\n${lines.join("\n")}`)}function commonPathPrefix(paths){if(!paths.length)return[];const prefix=[];for(let i=0;i<paths[0].length;i++){const value=paths[0][i];if(paths.every(p=>p[i]===value))prefix.push(value);else break}return prefix}async function copyOracleOutput(){const box=$("oracleOutput");await navigator.clipboard.writeText((box.innerText||box.textContent||""));setStatus("Copied table output")}function appendOracleToJournal(){const box=$("oracleOutput");const text=box&&box.dataset.hasRolls?(box.innerText||box.textContent||"").trim():"";if(!text){setStatus("No table output to add");return}putTextInJournalComment(text,"Oracle output copied to comment editor for final edit")}function clearOracleOutput(){const box=$("oracleOutput");box.textContent="Roll from the table tree.";delete box.dataset.hasRolls;setStatus("Cleared table output")}function undoScene(){state.sceneLog.pop();state.lastSceneText=state.sceneLog.length?state.sceneLog[state.sceneLog.length-1].text:"";saveState();render()}function clearLog(){if(!confirm("Clear the scene log?"))return;state.sceneLog=[];state.lastSceneText="";saveState();render()}async function copyCurrentScene(){if(!state.lastSceneText)return;await navigator.clipboard.writeText(state.lastSceneText);setStatus("Copied output")}function exportJson(){readFormAndSave();const blob=new Blob([JSON.stringify(state,null,2)],{type:"application/json"});const a=document.createElement("a");a.href=URL.createObjectURL(blob);const stamp=new Date().toISOString().slice(0,19).replaceAll(":","-");a.download=`saga-atlas-${stamp}.json`;a.click();URL.revokeObjectURL(a.href);setStatus("Exported JSON")}function escapeRtfText(text){return String(text||"").replace(/[\\{}]/g,"\\$&").replace(/\r?\n/g,"\\par ").replace(/[\u0080-\uFFFF]/g,ch=>"\\u"+ch.charCodeAt(0)+"?")}function htmlToRtf(html){const doc=new DOMParser().parseFromString("<div>"+(html||"")+"</div>","text/html");function walk(node){if(node.nodeType===3)return escapeRtfText(node.nodeValue);if(node.nodeType!==1)return"";const tag=node.tagName.toLowerCase();if(tag==="br")return"\\par ";if(tag==="img"){const src=node.getAttribute("src")||"";const m=src.match(/^data:image\/(png|jpeg|jpg);base64,(.+)$/i);if(!m)return" [image] ";const kind=m[1].toLowerCase()==="png"?"pngblip":"jpegblip";const bin=atob(m[2]);let hex="";for(let i=0;i<bin.length;i++)hex+=("0"+bin.charCodeAt(i).toString(16)).slice(-2);return"{\\pict\\"+kind+" "+hex+"}\\par ";}let inner="";node.childNodes.forEach(c=>inner+=walk(c));if(tag==="b"||tag==="strong")return"{\\b "+inner+"}";if(tag==="i"||tag==="em")return"{\\i "+inner+"}";if(tag==="h1"||tag==="h2"||tag==="h3")return"\\par {\\b\\fs32 "+inner+"}\\par ";if(tag==="li")return"\\par \\bullet "+inner;if(tag==="blockquote")return"\\par \\li360 {\\i "+inner+"}\\li0 \\par ";if(["p","div","section","article","ul","ol"].includes(tag))return inner+"\\par ";return inner}let out="";doc.body.firstChild.childNodes.forEach(c=>out+=walk(c));return out}function exportJournalRichText(){if(!Array.isArray(state.journal)||!state.journal.length){setStatus("No journal entries to export");return}const stamp=new Date().toISOString().slice(0,19).replaceAll(":","-");let body="{\\b\\fs36 Saga Atlas Journal}\\par\\par ";state.journal.forEach(entry=>{body+="{\\b "+escapeRtfText(new Date(entry.createdAt).toLocaleString()+" — "+(entry.source||"Journal"))+"}\\par ";body+=entry.isHtml?htmlToRtf(entry.text):escapeRtfText(entry.text||"");body+="\\par\\par "});const rtf="{\\rtf1\\ansi\\deff0{\\fonttbl{\\f0 Arial;}}\\f0\\fs22 "+body+"}";const blob=new Blob([rtf],{type:"application/rtf"});const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=`saga-atlas-journal-${stamp}.rtf`;a.click();URL.revokeObjectURL(a.href);setStatus("Exported Journal RTF")}function importJson(evt){const file=evt.target.files[0];if(!file)return;const reader=new FileReader();reader.onload=()=>{try{const imported=JSON.parse(reader.result);state={...DEFAULT_STATE,...imported};saveState();render();setStatus("Imported campaign JSON")}catch(e){alert("Could not import JSON: "+e.message)}};reader.readAsText(file)}function supportsFileSystemAccess(){return"showSaveFilePicker"in window}async function bindFile(){if(!supportsFileSystemAccess()){alert("This browser does not support file binding. Use Export/Import JSON instead.");return}try{boundFileHandle=await window.showSaveFilePicker({suggestedName:"saga-atlas-campaign.json",types:[{description:"JSON",accept:{"application/json":[".json"]}}]});await saveBoundFile();setStatus("Bound save file")}catch(e){if(e.name!=="AbortError")alert("File binding failed: "+e.message)}}async function saveBoundFile(){if(!boundFileHandle){alert("No bound file yet. Use Bind Save File first.");return}readFormAndSave();const writable=await boundFileHandle.createWritable();await writable.write(JSON.stringify(state,null,2));await writable.close();setStatus("Saved bound file "+new Date().toLocaleTimeString())}function configureAutosave(){if(autosaveTimer)clearInterval(autosaveTimer);autosaveTimer=null;if($("autosaveBoundFile").checked){autosaveTimer=setInterval(()=>{if(boundFileHandle)saveBoundFile().catch(err=>setStatus("Autosave failed"))},10*60*1000);setStatus("10-minute autosave enabled")}else setStatus("10-minute autosave disabled")}
+function describePressure(){if(state.threatLevel>=7)return"Everything feels exposed, watched, or already too late.";if(state.threatLevel>=4)return"There is enough pressure that lingering here has a cost.";if(state.mysteryLevel>=6)return"The scene feels wrong in a way that invites investigation.";return"For now, there is enough room to observe before danger closes in."}function continuityLine(){if(!state.sceneLog.length)return"This is the opening beat. Establish what feels normal before disrupting it.";const last=state.sceneLog[state.sceneLog.length-1];return`This follows from Scene ${last.number}. Carry forward one unresolved element from: ${last.summary}.`}function applyConsequence(consequence){if(consequence.includes("threat"))state.threatLevel=Math.min(10,state.threatLevel+1);if(consequence.includes("mystery"))state.mysteryLevel=Math.min(10,state.mysteryLevel+1);if(state.escalateOnComplication&&state.phase==="Complication")state.threatLevel=Math.min(10,state.threatLevel+1)}function advancePhase(afterScene){const order=["Setup","Approach","Discovery","Complication","Confrontation","Choice","Consequence","Transition"];const i=order.indexOf(state.phase);state.phase=order[(i+1)%order.length];if(afterScene&&state.phase==="Setup")state.pacing=state.threatLevel>=7?"Aftermath":"Calm";else if(afterScene&&state.threatLevel>=6)state.pacing="Dangerous";else if(afterScene&&["Complication","Confrontation","Choice"].includes(state.phase))state.pacing="Escalating"}function buildOracleTree(){const root=$("oracleTree");root.innerHTML="";const filter=(state.oracleFilter||"").trim().toLowerCase();const oracleLayout=[{label:"⭐ Core Solo",children:["Core Oracles","Core Solo Engine","Campaign Intelligence Engine"]},{label:"📖 Story Director",children:["Plot Engine","Adventure","Story","Mysteries & Coverups","Mission Aftermath"]},{label:"🌌 Exploration",children:["Exploration","Sector & System Creation","Worlds & Colonies","Planets","Settlements","Colonies and Expeditions","Vaults / Ruins"]},{label:"🚀 Space Operations",children:["Space Operations","Starships","Derelicts","Space Encounters","Trade & Cargo","Industrial Hazards"]},{label:"👥 Characters & Society",children:["Characters","Crew & NPCs","Frontier Society","Corporate Powers","Factions","Law, Marshals & Crime"]},{label:"☠ Threats & Horror",children:["Conflict","Marines & Security","Danger Situations","Horror Escalation","Fear and Dread","Xeno-Biology","Androids & AI","Creatures"]},{label:"📚 Legacy / General",children:["Campaign","Missions","Miscellaneous","Location Themes","Districts"]}];const matches=(key,value,path)=>{const p=path.concat(key).join(" ").toLowerCase();if(!filter)return true;if(p.includes(filter))return true;if(Array.isArray(value))return value.some(v=>String(v).toLowerCase().includes(filter));return Object.entries(value).some(([ck,cv])=>matches(ck,cv,path.concat(key)))};const buildNode=(key,value,path)=>{if(!matches(key,value,path))return null;if(Array.isArray(value)){const row=document.createElement("div");row.className="table-row";const label=document.createElement("span");label.textContent=`${key} (${value.length})`;const btn=document.createElement("button");btn.className="tiny secondary";btn.textContent="🎲";btn.title="Roll";btn.setAttribute("aria-label","Roll");btn.onclick=()=>{recordOracleUse(path[0]||key);rollTable(path.concat(key),value)};row.appendChild(label);row.appendChild(btn);return row}const details=document.createElement("details");details.className="oracle-node";if(filter)details.open=true;const summary=document.createElement("summary");const label=document.createElement("span");label.textContent=key;const rollAll=document.createElement("button");rollAll.className="tiny secondary";rollAll.textContent="🎲🎲";rollAll.title="Roll group";rollAll.setAttribute("aria-label","Roll group");rollAll.onclick=e=>{e.preventDefault();e.stopPropagation();recordOracleUse(path[0]||key);rollGroup(path.concat(key),value)};summary.appendChild(label);summary.appendChild(rollAll);details.appendChild(summary);for(const[childKey,childValue]of Object.entries(value)){const child=buildNode(childKey,childValue,path.concat(key));if(child)details.appendChild(child)}return details};const buildParent=(parent)=>{if(parent.children.length===1&&parent.children[0]===parent.label){const value=TABLES[parent.label];return value?buildNode(parent.label,value,[]):null}const details=document.createElement("details");details.className="oracle-node oracle-parent";if(filter)details.open=true;const summary=document.createElement("summary");const label=document.createElement("span");label.textContent=parent.label;summary.appendChild(label);details.appendChild(summary);parent.children.forEach(groupName=>{const value=TABLES[groupName];if(!value)return;const node=buildNode(groupName,value,[parent.label]);if(node)details.appendChild(node)});return details.children.length>1?details:null};oracleLayout.forEach(parent=>{const node=buildParent(parent);if(node)root.appendChild(node)});if(!root.children.length){const empty=document.createElement("p");empty.className="small";empty.textContent="No oracle tables match the filter.";root.appendChild(empty)}}function collapseAllOracles(){document.querySelectorAll("#oracleTree details.oracle-node").forEach(node=>node.open=false);setStatus("Collapsed all Oracle sections")}function recordOracleUse(group){if(!group)return;if(!state.oracleUsage)state.oracleUsage={};state.oracleUsage[group]=(state.oracleUsage[group]||0)+1;saveState()}function appendOracleOutput(text){const box=$("oracleOutput");if(!box.dataset.hasRolls){box.textContent="";box.dataset.hasRolls="true"}box.textContent+=(box.textContent?"\n\n---\n":"")+text;box.scrollTop=box.scrollHeight}function rollTable(path,values){appendOracleOutput(`${path.join(" > ")}\n${pick(values)}`)}function rollGroup(path,group){const leaves=flattenKeys(group,path);let prefix=commonPathPrefix(leaves.map(t=>t.path));if(prefix.length===0)prefix=path;const lines=leaves.map(t=>`${t.path.slice(prefix.length).join(" > ")}: ${pick(t.values)}`);appendOracleOutput(`${prefix.join(" > ")}\n${lines.join("\n")}`)}function commonPathPrefix(paths){if(!paths.length)return[];const prefix=[];for(let i=0;i<paths[0].length;i++){const value=paths[0][i];if(paths.every(p=>p[i]===value))prefix.push(value);else break}return prefix}async function copyOracleOutput(){const box=$("oracleOutput");await navigator.clipboard.writeText((box.innerText||box.textContent||""));setStatus("Copied table output")}function appendOracleToJournal(){const box=$("oracleOutput");const text=box&&box.dataset.hasRolls?(box.innerText||box.textContent||"").trim():"";if(!text){setStatus("No table output to add");return}putTextInJournalComment(text,"Oracle output copied to comment editor for final edit")}function clearOracleOutput(){const box=$("oracleOutput");box.textContent="Roll from the table tree.";delete box.dataset.hasRolls;setStatus("Cleared table output")}function undoScene(){state.sceneLog.pop();state.lastSceneText=state.sceneLog.length?state.sceneLog[state.sceneLog.length-1].text:"";saveState();render()}function clearLog(){if(!confirm("Clear the scene log?"))return;state.sceneLog=[];state.lastSceneText="";saveState();render()}async function copyCurrentScene(){if(!state.lastSceneText)return;await navigator.clipboard.writeText(state.lastSceneText);setStatus("Copied output")}function exportJson(){readFormAndSave();const blob=new Blob([JSON.stringify(state,null,2)],{type:"application/json"});const a=document.createElement("a");a.href=URL.createObjectURL(blob);const stamp=new Date().toISOString().slice(0,19).replaceAll(":","-");a.download=`saga-atlas-${stamp}.json`;a.click();URL.revokeObjectURL(a.href);setStatus("Exported JSON")}function escapeRtfText(text){return String(text||"").replace(/[\\{}]/g,"\\$&").replace(/\r?\n/g,"\\par ").replace(/[\u0080-\uFFFF]/g,ch=>"\\u"+ch.charCodeAt(0)+"?")}function htmlToRtf(html){const doc=new DOMParser().parseFromString("<div>"+(html||"")+"</div>","text/html");function walk(node){if(node.nodeType===3)return escapeRtfText(node.nodeValue);if(node.nodeType!==1)return"";const tag=node.tagName.toLowerCase();if(tag==="br")return"\\par ";if(tag==="img"){const src=node.getAttribute("src")||"";const m=src.match(/^data:image\/(png|jpeg|jpg);base64,(.+)$/i);if(!m)return" [image] ";const kind=m[1].toLowerCase()==="png"?"pngblip":"jpegblip";const bin=atob(m[2]);let hex="";for(let i=0;i<bin.length;i++)hex+=("0"+bin.charCodeAt(i).toString(16)).slice(-2);return"{\\pict\\"+kind+" "+hex+"}\\par ";}let inner="";node.childNodes.forEach(c=>inner+=walk(c));if(tag==="b"||tag==="strong")return"{\\b "+inner+"}";if(tag==="i"||tag==="em")return"{\\i "+inner+"}";if(tag==="h1"||tag==="h2"||tag==="h3")return"\\par {\\b\\fs32 "+inner+"}\\par ";if(tag==="li")return"\\par \\bullet "+inner;if(tag==="blockquote")return"\\par \\li360 {\\i "+inner+"}\\li0 \\par ";if(["p","div","section","article","ul","ol"].includes(tag))return inner+"\\par ";return inner}let out="";doc.body.firstChild.childNodes.forEach(c=>out+=walk(c));return out}function exportJournalRichText(){if(!Array.isArray(state.journal)||!state.journal.length){setStatus("No journal entries to export");return}const stamp=new Date().toISOString().slice(0,19).replaceAll(":","-");let body="{\\b\\fs36 Saga Atlas Journal}\\par\\par ";state.journal.forEach(entry=>{body+="{\\b "+escapeRtfText(new Date(entry.createdAt).toLocaleString()+" — "+(entry.source||"Journal"))+"}\\par ";body+=entry.isHtml?htmlToRtf(entry.text):escapeRtfText(entry.text||"");body+="\\par\\par "});const rtf="{\\rtf1\\ansi\\deff0{\\fonttbl{\\f0 Arial;}}\\f0\\fs22 "+body+"}";const blob=new Blob([rtf],{type:"application/rtf"});const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=`saga-atlas-journal-${stamp}.rtf`;a.click();URL.revokeObjectURL(a.href);setStatus("Exported Journal RTF")}function importJson(evt){const file=evt.target.files[0];if(!file)return;const reader=new FileReader();reader.onload=()=>{try{const imported=JSON.parse(reader.result);state={...DEFAULT_STATE,...imported};saveState();render();setStatus("Imported campaign JSON")}catch(e){alert("Could not import JSON: "+e.message)}};reader.readAsText(file)}function supportsFileSystemAccess(){return"showSaveFilePicker"in window}async function bindFile(){if(!supportsFileSystemAccess()){alert("This browser does not support file binding. Use Export/Import JSON instead.");return}try{boundFileHandle=await window.showSaveFilePicker({suggestedName:"saga-atlas-campaign.json",types:[{description:"JSON",accept:{"application/json":[".json"]}}]});await saveBoundFile();setStatus("Bound save file")}catch(e){if(e.name!=="AbortError")alert("File binding failed: "+e.message)}}async function saveBoundFile(){if(!boundFileHandle){alert("No bound file yet. Use Bind Save File first.");return}readFormAndSave();const writable=await boundFileHandle.createWritable();await writable.write(JSON.stringify(state,null,2));await writable.close();setStatus("Saved bound file "+new Date().toLocaleTimeString())}function configureAutosave(){if(autosaveTimer)clearInterval(autosaveTimer);autosaveTimer=null;if($("autosaveBoundFile").checked){autosaveTimer=setInterval(()=>{if(boundFileHandle)saveBoundFile().catch(err=>setStatus("Autosave failed"))},10*60*1000);setStatus("10-minute autosave enabled")}else setStatus("10-minute autosave disabled")}
 
 function showCenterTab(tab,save=true){state.activeCenterTab=tab==="journal"?"journal":"output";const out=$("currentOutputView");const journal=$("journalView");const outBtn=$("showOutputTab");const journalBtn=$("showJournalTab");const title=$("centerSectionTitle");if(out)out.classList.toggle("active-view",state.activeCenterTab==="output");if(journal)journal.classList.toggle("active-view",state.activeCenterTab==="journal");if(outBtn)outBtn.classList.toggle("active",state.activeCenterTab==="output");if(journalBtn)journalBtn.classList.toggle("active",state.activeCenterTab==="journal");if(title)title.textContent=state.activeCenterTab==="journal"?"Journal":"Scene Header";const sceneTopActions=$("sceneTopActions");if(sceneTopActions)sceneTopActions.hidden=state.activeCenterTab!=="output";document.body.classList.toggle("center-focused",state.activeCenterTab==="output"||state.activeCenterTab==="journal");scrollActiveCardToTop(state.activeCenterTab==="journal"?"journalView":"currentOutputView");if(save)saveState()}function showLeftTab(tab,save=true){state.activeLeftTab=(tab==="crew"||tab==="living")?tab:"scene";const scene=$("controlsPanel");const crew=$("crewLinkPanel");const living=$("livingShipPanel");if(scene)scene.classList.toggle("active-left-view",state.activeLeftTab==="scene");if(crew)crew.classList.toggle("active-left-view",state.activeLeftTab==="crew");if(living)living.classList.toggle("active-left-view",state.activeLeftTab==="living");document.querySelectorAll("[data-left-tab]").forEach(btn=>btn.classList.toggle("active",btn.dataset.leftTab===state.activeLeftTab));document.body.classList.toggle("left-crew-expanded",state.activeLeftTab==="crew"||state.activeLeftTab==="living");if(document.body.classList.contains("side-panel-open")&&window.matchMedia("(max-width: 900px)").matches){if(scene)scene.classList.toggle("is-open",state.activeLeftTab==="scene");if(crew)crew.classList.toggle("is-open",state.activeLeftTab==="crew");if(living)living.classList.toggle("is-open",state.activeLeftTab==="living");}scrollActiveCardToTop(state.activeLeftTab==="crew"?"crewLinkPanel":state.activeLeftTab==="living"?"livingShipPanel":"controlsPanel");if(save)saveState()}
 function sanitizeHtml(html){const template=document.createElement("template");template.innerHTML=html||"";template.content.querySelectorAll("script,style,iframe,object,embed").forEach(n=>n.remove());template.content.querySelectorAll("*").forEach(el=>{[...el.attributes].forEach(attr=>{const name=attr.name.toLowerCase();const value=attr.value||"";if(name.startsWith("on")||value.toLowerCase().startsWith("javascript:"))el.removeAttribute(attr.name)})});return template.innerHTML.trim()}
@@ -179,7 +179,7 @@ const ENTITY_SUBTYPES = {
   ],
   asset: [
     {key:'asset', label:'Asset', icon:'▣'},
-    {key:'starship', label:'Starship', icon:'img:entity-starship.png'},
+    {key:'starship', label:'Starship', icon:'img:ship-generator-icon.png'},
     {key:'vehicle', label:'Vehicle', icon:'◧'},
     {key:'cargo', label:'Cargo', icon:'▤'},
     {key:'artifact', label:'Artifact', icon:'◇'},
@@ -655,7 +655,7 @@ initEntityTracker();
   function activateSceneElements(){ if(typeof showCenterTab==='function') showCenterTab('output'); window.scrollTo({top:0,behavior:'smooth'}); }
   function activateJournal(){ if(typeof showCenterTab==='function') showCenterTab('journal'); window.scrollTo({top:0,behavior:'smooth'}); }
   function rebindTopNav(){
-    var pairs=[['openEntityListPanel',activateEntityList],['openControlsPanel',activateBuilder],['openCrewLinkPanel',activateCrew],['openLivingShipPanel',activateShip],['openEntityTrackerPanel',activateEntityTracker],['showSceneElementsNav',activateSceneElements],['focusOutputPanel',activateSceneElements],['showJournalNav',activateJournal],['openOraclePanel',activateOracles]];
+    var pairs=[['openEntityListPanel',activateEntityList],['openControlsPanel',activateBuilder],['openCrewLinkPanel',activateCrew],['openLivingShipPanel',activateShip],['openEntityTrackerPanel',activateEntityTracker],['showSceneElementsNav',activateSceneElements],['focusOutputPanel',activateSceneElements],['showJournalNav',activateJournal],['openOraclePanel',activateOracles],['openDocumentsPanel',function(){ try{ if(typeof showRightTabPublic==='function') showRightTabPublic('documents'); var op=document.getElementById('oraclePanel'); if(op){ op.classList.add('is-open'); document.body.classList.add('side-panel-open'); } }catch(e){} }]];
     pairs.forEach(function(pair){var el=$(pair[0]); if(el && !el.dataset.navRebound){el.dataset.navRebound='1'; el.addEventListener('click',function(ev){ev.preventDefault(); pair[1]();});}});
   }
   function openEntityFromList(e){
@@ -2865,4 +2865,171 @@ document.addEventListener('click',function(e){
   if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', function(){ patchEntityHelpersForLore(); bindReliableCampaignImport(); refreshEntityViews(); });
   setTimeout(function(){ patchEntityHelpersForLore(); bindReliableCampaignImport(); refreshEntityViews(); }, 250);
   setTimeout(function(){ patchEntityHelpersForLore(); bindReliableCampaignImport(); refreshEntityViews(); }, 1000);
+})();
+
+
+/* 2026-06-24 Saga Atlas nav/docs/android fixes.
+   - Oracle, Guide, and Documents top nav always restore the right panel even after an entity editor has replaced the center/right workspace.
+   - Adds a top-nav Documents target.
+   - Android Crew Link opens the external site in a browser tab because embedded iframes are unreliable on several Android browsers. */
+(function(){
+  function byId(id){ return document.getElementById(id); }
+  function resetTop(){ try{ if(document.activeElement&&document.activeElement.blur) document.activeElement.blur(); window.scrollTo({top:0,left:0,behavior:'auto'}); document.documentElement.scrollTop=0; document.body.scrollTop=0; var layout=document.querySelector('.layout'); if(layout) layout.scrollTop=0; }catch(e){} }
+  function closeEntityAndCrewWorkspace(){
+    document.body.classList.remove('entity-editor-workspace-open','entity-editor-overlay-open','crew-workspace-open','left-crew-expanded');
+    var tracker=byId('entityTrackerPanel'); if(tracker) tracker.classList.remove('entity-editor-overlay','active-left-view');
+    var list=byId('entityListPanel'); if(list) list.classList.add('active-left-view');
+  }
+  function setRightTab(tab){
+    if(typeof window.showSagaAtlasRightTab==='function') window.showSagaAtlasRightTab(tab);
+    else if(typeof window.showRightTabPublic==='function') window.showRightTabPublic(tab);
+    else {
+      var tabs={oracles:['oracleLibraryTab','showOracleLibraryTab'],guide:['guideLibraryTab','showGuideLibraryTab'],documents:['documentLibraryTab','showDocumentLibraryTab']};
+      Object.keys(tabs).forEach(function(key){ var panel=byId(tabs[key][0]), btn=byId(tabs[key][1]), active=key===tab; if(panel){panel.hidden=!active; panel.classList.toggle('active-oracle-tab',active);} if(btn) btn.classList.toggle('active',active); });
+    }
+    if(tab==='documents' && window.SagaAtlasDocuments && typeof window.SagaAtlasDocuments.renderDocumentLibrary==='function') window.SagaAtlasDocuments.renderDocumentLibrary();
+  }
+  function openRightWorkspace(tab){
+    closeEntityAndCrewWorkspace();
+    var panel=byId('oraclePanel');
+    if(panel){ document.querySelectorAll('.side-panel').forEach(function(p){ p.classList.toggle('is-open', p===panel); }); panel.scrollTop=0; }
+    var backdrop=byId('panelBackdrop'); if(backdrop) backdrop.hidden=false;
+    document.body.classList.add('side-panel-open');
+    setRightTab(tab);
+    resetTop(); setTimeout(resetTop,0); setTimeout(resetTop,60);
+  }
+  function showCenter(tab){ if(typeof window.showCenterTab==='function') window.showCenterTab(tab,true); else if(typeof showCenterTab==='function') showCenterTab(tab,true); }
+  function forceCrewWorkspace(){
+    document.body.classList.add('crew-workspace-open','left-crew-expanded');
+    document.body.classList.remove('entity-editor-workspace-open','entity-editor-overlay-open');
+    document.querySelectorAll('.left-view').forEach(function(p){p.classList.remove('active-left-view');});
+    var crew=byId('crewLinkPanel'); if(crew) crew.classList.add('active-left-view');
+    if(window.state){ window.state.activeLeftTab='crew'; try{ if(typeof saveState==='function') saveState(); }catch(e){} }
+    resetTop();
+  }
+  function isAndroid(){ return /Android/i.test(navigator.userAgent||''); }
+  function openCrewExternal(){
+    var url='https://starforged-crew-link.scottbenton.dev/';
+    try{ var w=window.open(url,'_blank','noopener,noreferrer'); if(!w) window.location.href=url; }catch(e){ window.location.href=url; }
+  }
+  function handleTopNav(ev){
+    var btn=ev.target && ev.target.closest && ev.target.closest('.top-nav button, .mobile-panel-tabs.top-nav button');
+    if(!btn) return;
+    var id=btn.id, handled=true;
+    if(id==='openOraclePanel') openRightWorkspace('oracles');
+    else if(id==='openGuidePanel'){ try{ if(window.state && window.state.activeCenterTab==='guide') showCenter('journal'); }catch(e){} openRightWorkspace('guide'); }
+    else if(id==='openDocumentsPanel') openRightWorkspace('documents');
+    else if(id==='showJournalNav'){ closeEntityAndCrewWorkspace(); showCenter('journal'); }
+    else if(id==='showSceneElementsNav' || id==='focusOutputPanel'){ closeEntityAndCrewWorkspace(); showCenter('output'); }
+    else if(id==='openCrewLinkPanel'){ if(isAndroid()) openCrewExternal(); else forceCrewWorkspace(); }
+    else handled=false;
+    if(handled){ ev.preventDefault(); ev.stopPropagation(); if(ev.stopImmediatePropagation) ev.stopImmediatePropagation(); return false; }
+  }
+  document.addEventListener('click', handleTopNav, true);
+  function bindExternalCrew(){ var a=byId('openCrewLinkExternal'); if(a && !a.dataset.bound){ a.dataset.bound='1'; a.addEventListener('click', function(ev){ ev.stopPropagation(); }, true); } }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded', bindExternalCrew); else bindExternalCrew();
+  setTimeout(bindExternalCrew,500);
+})();
+
+/* 2026-06-24 top nav state reset audit/fix.
+   Window-capture handler runs before older document-capture/target handlers.
+   Each top nav button now clears incompatible workspace classes before opening
+   its intended left/center/right section. */
+(function(){
+  function byId(id){ return document.getElementById(id); }
+  function stop(ev){ ev.preventDefault(); ev.stopPropagation(); if(ev.stopImmediatePropagation) ev.stopImmediatePropagation(); }
+  function pageTop(){
+    try{
+      if(document.activeElement && document.activeElement.blur) document.activeElement.blur();
+      window.scrollTo({top:0,left:0,behavior:'auto'});
+      document.documentElement.scrollTop=0; document.body.scrollTop=0;
+      var layout=document.querySelector('.layout'); if(layout) layout.scrollTop=0;
+    }catch(e){}
+  }
+  function clearWorkspace(){
+    document.body.classList.remove('crew-workspace-open','entity-editor-workspace-open','entity-editor-overlay-open','left-crew-expanded');
+    var tracker=byId('entityTrackerPanel');
+    if(tracker) tracker.classList.remove('entity-editor-overlay');
+  }
+  function markLeft(tab){
+    clearWorkspace();
+    if(typeof window.showLeftTab === 'function') window.showLeftTab(tab, true);
+    else if(typeof showLeftTab === 'function') showLeftTab(tab, true);
+    // showLeftTab may intentionally add left-crew-expanded for entity/living; keep it
+    // only for those views, never from a previous Crew Link workspace.
+    if(tab !== 'crew') document.body.classList.remove('crew-workspace-open');
+    if(tab !== 'entity') document.body.classList.remove('entity-editor-workspace-open','entity-editor-overlay-open');
+  }
+  function markCenter(tab){
+    clearWorkspace();
+    if(typeof window.showCenterTab === 'function') window.showCenterTab(tab, true);
+    else if(typeof showCenterTab === 'function') showCenterTab(tab, true);
+    // Leave Entity Library visible as a safe default in the left column.
+    if(typeof window.showLeftTab === 'function') window.showLeftTab('entityList', true);
+    else if(typeof showLeftTab === 'function') showLeftTab('entityList', true);
+  }
+  function setRightTab(tab){
+    if(typeof window.showSagaAtlasRightTab === 'function') window.showSagaAtlasRightTab(tab);
+    else if(typeof window.showHostileRightTab === 'function') window.showHostileRightTab(tab);
+    else {
+      var map={oracles:['oracleLibraryTab','showOracleLibraryTab'],guide:['guideLibraryTab','showGuideLibraryTab'],documents:['documentLibraryTab','showDocumentLibraryTab']};
+      Object.keys(map).forEach(function(k){
+        var panel=byId(map[k][0]), btn=byId(map[k][1]), active=k===tab;
+        if(panel){ panel.hidden=!active; panel.classList.toggle('active-oracle-tab', active); }
+        if(btn) btn.classList.toggle('active', active);
+      });
+    }
+    if(tab === 'documents' && window.SagaAtlasDocuments && typeof window.SagaAtlasDocuments.renderDocumentLibrary === 'function') window.SagaAtlasDocuments.renderDocumentLibrary();
+  }
+  function openRight(tab){
+    clearWorkspace();
+    var panel=byId('oraclePanel');
+    if(panel){
+      document.querySelectorAll('.side-panel').forEach(function(p){ p.classList.toggle('is-open', p===panel); });
+      panel.scrollTop=0;
+    }
+    var bd=byId('panelBackdrop'); if(bd) bd.hidden=false;
+    document.body.classList.add('side-panel-open');
+    setRightTab(tab);
+    if(typeof window.showLeftTab === 'function') window.showLeftTab('entityList', true);
+    else if(typeof showLeftTab === 'function') showLeftTab('entityList', true);
+  }
+  function openLeftPanel(tab, panelId){
+    markLeft(tab);
+    var panel=byId(panelId);
+    if(panel){ document.querySelectorAll('.side-panel').forEach(function(p){ p.classList.toggle('is-open', p===panel); }); }
+    var bd=byId('panelBackdrop'); if(bd) bd.hidden=false;
+    document.body.classList.add('side-panel-open');
+  }
+  function openCrew(){
+    clearWorkspace();
+    if(typeof window.showLeftTab === 'function') window.showLeftTab('crew', true);
+    else if(typeof showLeftTab === 'function') showLeftTab('crew', true);
+    document.body.classList.remove('entity-editor-workspace-open','entity-editor-overlay-open');
+    document.body.classList.add('crew-workspace-open');
+    var crew=byId('crewLinkPanel'); if(crew) crew.classList.add('active-left-view');
+  }
+  function handler(ev){
+    var btn=ev.target && ev.target.closest && ev.target.closest('.top-nav button, .mobile-panel-tabs button');
+    if(!btn || !btn.id) return;
+    var id=btn.id;
+    var handled=true;
+    switch(id){
+      case 'openControlsPanel': openLeftPanel('scene','controlsPanel'); break;
+      case 'openEntityListPanel': markLeft('entityList'); break;
+      case 'openCrewLinkPanel': openCrew(); break;
+      case 'openLivingShipPanel': openLeftPanel('living','livingShipPanel'); break;
+      case 'showJournalNav': markCenter('journal'); break;
+      case 'showSceneElementsNav':
+      case 'focusOutputPanel': markCenter('output'); break;
+      case 'openOraclePanel': openRight('oracles'); break;
+      case 'openGuidePanel':
+        try{ if(window.state && window.state.activeCenterTab==='guide') markCenter('journal'); }catch(e){}
+        openRight('guide'); break;
+      case 'openDocumentsPanel': openRight('documents'); break;
+      default: handled=false;
+    }
+    if(handled){ stop(ev); pageTop(); setTimeout(pageTop,0); setTimeout(pageTop,80); return false; }
+  }
+  window.addEventListener('click', handler, true);
 })();

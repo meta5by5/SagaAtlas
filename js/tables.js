@@ -1502,3 +1502,272 @@ window.SCENE_TABLES = {
     ]
   }
 };
+
+
+Object.assign(window.SCENE_TABLES, {
+  "Campaign Intelligence Engine": {
+    "Director Move": [
+      "Put a useful answer behind a costly door", "Show the human cost of the mission", "Reveal who benefits from the danger", "Make the safest route politically dangerous",
+      "Offer evidence that contradicts the obvious story", "Turn a resource into a moral problem", "Let an ally ask for something unreasonable", "Expose a hidden dependency in the colony",
+      "Move the threat closer without fully showing it", "Make the crew choose between speed and proof", "Create a public consequence for private action", "Let the environment answer before an NPC does",
+      "Make a routine procedure fail at the worst time", "Tie a minor clue to a larger pattern", "Force the crew to spend reputation as currency", "Put a vulnerable bystander in the path of progress"
+    ],
+    "Roleplay Option": [
+      "Press the patron for the real objective", "Protect workers even if it delays the contract", "Trade a secret for access", "Lie to security and risk later exposure",
+      "Promise evacuation before knowing if it is possible", "Appeal to professional duty", "Threaten to go public", "Make a quiet deal with a rival faction",
+      "Interview the person everyone dismisses", "Comfort a terrified survivor", "Challenge the corporate version of events", "Split the crew between proof and rescue",
+      "Ask what the android was ordered not to say", "Treat the criminal as a witness", "Use procedure as leverage", "Accept blame to keep the team moving"
+    ],
+    "Recommended Next Step": [
+      "Secure the scene before investigating", "Question the last person who saw the victim", "Check maintenance and safety logs", "Compare official records against physical evidence",
+      "Trace cargo movement", "Inspect the sealed or restricted area", "Map power, air, and comms dependencies", "Identify who has authority to lie",
+      "Find an independent witness", "Recover sensor or black box data", "Establish an escape route", "Determine what the corporation wants preserved",
+      "Test a biological sample under controlled conditions", "Force the opposition to reveal urgency", "Create a fallback extraction point", "Put one clear question to the oracle"
+    ],
+    "Momentum Adjustment": [
+      "Raise corporate pressure by one", "Raise alien activity by one", "Raise crew stress by one", "Lower resources by one",
+      "Lower public trust by one", "Raise law/security attention by one", "Add a countdown clock", "Mark a faction as suspicious",
+      "Give the crew a temporary advantage", "Reveal a safe route with a hidden cost", "Convert a clue into a lead", "Convert a lead into a confrontation",
+      "Delay the threat but increase its scale", "Move the mission clock forward", "Offer a hard bargain", "Create a new unresolved thread"
+    ]
+  },
+  "Core Solo Engine": {
+    "Decision Prompt": [
+      "What would a professional do here?", "What would make this job no longer routine?", "Who is not being protected by the official plan?", "What evidence would change everyone's priorities?",
+      "What is the fastest safe option?", "What is the slowest truthful option?", "Which choice burns a bridge?", "Which choice preserves leverage?",
+      "What does the crew need before they can move?", "What does the opposition need to hide?", "What would make retreat honorable?", "What would make victory expensive?"
+    ],
+    "Scene Question": [
+      "What is really happening here?", "Who benefits if the crew leaves?", "What has been altered since the incident?", "What does the environment reveal?",
+      "Who is afraid to speak?", "What has the corporation already removed?", "What is failing right now?", "What is the next visible consequence?",
+      "What personal stake enters the scene?", "What proof is fragile?", "Who arrives before the crew is ready?", "What makes the obvious answer wrong?"
+    ]
+  },
+  "Exploration": {
+    "Discovery": [
+      "a pre-colony marker buried under industrial fill", "a survey drone transmitting from inside solid rock", "a heat bloom where maps show dead ground", "a microbial mat arranged around power cabling",
+      "a crashed lifter with cargo missing but bodies untouched", "a sealed hatch stamped with an obsolete safety code", "a cavern whose walls record vibration like memory", "a weather tower aimed at the wrong horizon",
+      "a hand-built shrine in an abandoned service tunnel", "a fuel cache tagged by a defunct contractor", "a false skyline produced by atmospheric refraction", "a living organism using station waste heat"
+    ],
+    "Route Hazard": [
+      "dust-choked sensors", "sinkholes hidden by construction mats", "magnetic interference from ore seams", "whiteout static across comms",
+      "predator trails crossing the safe route", "ice fractures under vehicle weight", "drone navigation loops", "corrosive rain bands",
+      "unstable tunnel supports", "illegal beacon spoofing", "radiation shadows from old equipment", "territorial worker pickets"
+    ],
+    "Exploration Payoff": [
+      "a safer route for future travel", "proof of illegal dumping", "a hidden water or fuel source", "coordinates to an older settlement",
+      "a biological clue that explains the hazard", "a salvageable machine part", "a witness hiding off-grid", "evidence that the colony was warned",
+      "a map of maintenance spaces", "an artifact that reacts to power", "an abandoned emergency shelter", "a corporate claim marker older than the contract"
+    ]
+  },
+  "Sector & System Creation": {
+    "System Pressure": [
+      "shipping delays are becoming political", "one corporation controls refueling", "old survey data is unreliable", "pirates avoid one silent moon",
+      "colonies compete for the same water source", "a military quarantine is poorly explained", "terraforming debt shapes every local decision", "union organizers are arriving ahead of inspectors",
+      "a noble or executive family treats the system as property", "an alien ecology disrupts industrial expansion", "automated law beacons contradict local practice", "a missing expedition changed the trade route"
+    ],
+    "Transit Event": [
+      "distress call on an obsolete band", "unregistered courier burns hard for the outer moon", "customs requests a live inspection", "a navigation buoy broadcasts two different positions",
+      "debris field from an unreported collision", "ship AI flags a route as emotionally unsafe", "a corporate tender shadows the crew", "fuel quality tests barely pass",
+      "crew receives a message sent before they departed", "military drone asks for credentials it should not know", "a cold storage pod wakes early", "passenger disappears from manifest records"
+    ]
+  },
+  "Worlds & Colonies": {
+    "Colony Problem": [
+      "water rationing hidden from investors", "worker housing built over contaminated ground", "life support maintenance deferred for bonuses", "local election controlled by contract debt",
+      "medical supplies diverted to executives", "terraforming enzymes mutating native life", "a missing survey team blamed on weather", "food production dependent on one failing machine",
+      "security protecting assets instead of people", "children reporting dreams of the same location", "android labor dispute suppressed", "a prospector strike that the corporation wants erased"
+    ],
+    "Local Color": [
+      "company slogans painted over older warning signs", "meal tickets used as informal currency", "church bells made from reactor scrap", "miners wearing family oxygen charms",
+      "children playing under refinery shadows", "imported trees dying in sealed planters", "public screens showing delayed Earth news", "union graffiti hidden inside maintenance panels",
+      "settlers naming storms like relatives", "androids standing silently during shift changes", "cargo containers converted into chapels", "old flags bleached by ultraviolet light"
+    ]
+  },
+  "Corporate Powers": {
+    "Corporate Pressure": [
+      "audit team arrives with private security", "patron changes the objective mid-mission", "legal threatens breach-of-contract penalties", "media release contradicts witness testimony",
+      "hazard pay is revoked unless the crew signs an NDA", "rival corp offers better terms for betrayal", "executive orders evidence transferred off-world", "insurance investigator is more dangerous than security",
+      "local administrator begs the crew not to file a report", "company doctor edits medical findings", "automated contract clause seizes salvage rights", "a board observer treats casualties as exposure metrics"
+    ],
+    "Hidden Agenda": [
+      "protect mineral rights", "weaponize a biological discovery", "avoid liability for a design flaw", "discredit union leadership",
+      "recover proprietary android code", "bury evidence of illegal colonization", "secure alien artifacts before regulators arrive", "turn disaster into acquisition leverage",
+      "force evacuation to break land claims", "test security doctrine on a live colony", "steal competitor route data", "preserve investor confidence at any cost"
+    ]
+  },
+  "Frontier Society": {
+    "Social Tension": [
+      "workers refuse to enter a sealed level", "families demand evacuation priority", "security arrests the wrong suspect", "settlers split between loyalty and survival",
+      "religious leaders interpret the hazard as judgment", "local merchants hoard filters and medicine", "youth gangs control unused service tunnels", "prospectors distrust all off-world authority",
+      "androids follow orders that humans never heard", "a marshal lacks jurisdiction but has moral authority", "company housing locks during curfew", "a black market keeps the colony alive"
+    ],
+    "Public Reaction": [
+      "fearful silence", "angry crowd", "rumor cascade", "worker slowdown", "public accusation", "symbolic strike", "panic buying", "forced celebration",
+      "memorial vigil", "barricaded neighborhood", "security crackdown", "quiet cooperation"
+    ]
+  },
+  "Crew & NPCs": {
+    "NPC Drive": [
+      "keep their crew alive", "hide a professional mistake", "earn passage off-world", "protect family from contract debt",
+      "prove the corporation lied", "complete the job despite fear", "sell the truth to the highest bidder", "cover for someone they love",
+      "obey an order they hate", "find a missing friend", "keep the colony from collapsing", "turn disaster into promotion"
+    ],
+    "NPC Secret": [
+      "falsified a safety check", "heard voices in comms before the incident", "knows where the bodies are", "is paid by a rival company",
+      "has illegal medical implants", "was ordered to abandon survivors", "stole a sample for black market sale", "saw an android ignore a direct order",
+      "knows the colony charter is invalid", "is hiding a child or refugee", "has access to restricted logs", "caused the accident accidentally"
+    ],
+    "Relationship Spark": [
+      "old debt", "shared military service", "failed romance", "family obligation", "rival professional pride", "mentor disappointment",
+      "blackmail", "survivor guilt", "contractual dependency", "religious trust", "criminal favor", "corporate patronage"
+    ]
+  },
+  "Space Operations": {
+    "Shipboard Emergency": [
+      "air recycler vibration changes pitch", "cargo shifts during burn", "cold sleep pod reports impossible vitals", "autodoc locks its patient file",
+      "drive room heat rises without load", "navigation solution includes a forbidden zone", "comms receive the ship's own distress call", "maintenance drone returns with organic residue",
+      "gravity flickers in one compartment", "hull camera shows a missing panel reattached", "fire suppression triggers in an empty bay", "ship computer asks for a dead crew member"
+    ],
+    "Dockside Complication": [
+      "customs flags cargo for moral rather than legal reasons", "berth fees double during emergency", "dockworkers refuse unsafe unloading", "port authority demands a bribe disguised as inspection",
+      "rival crew claims the same contract", "quarantine delays departure", "fuel is contaminated", "a passenger boards under another name",
+      "security scans find a planted item", "cargo owner vanishes", "crew is offered a side job", "the dock loses power during transfer"
+    ]
+  },
+  "Trade & Cargo": {
+    "Cargo Problem": [
+      "contents are mislabeled", "one container is warmer than declared", "paperwork lists a dead recipient", "cargo is legal here but illegal at destination",
+      "seal is intact but weight is wrong", "insurance requires dangerous route compliance", "perishable goods are failing early", "a container broadcasts weak distress pings",
+      "workers refuse to touch it", "rival claimant has partial title", "customs wants a sample opened", "cargo attracts local wildlife"
+    ],
+    "Trade Opportunity": [
+      "filters in short supply", "medicine needed after industrial accident", "ore buyer overpaying for speed", "luxury goods wanted by isolated executives",
+      "spare parts for obsolete machinery", "seed stock for failing farms", "data cores from a bankrupt surveyor", "prisoner transport under quiet contract",
+      "evacuation seats sold through back channels", "black market protein cultures", "construction foam after storm damage", "battery banks before long night"
+    ]
+  },
+  "Industrial Hazards": {
+    "Worksite Failure": [
+      "pressure door cycles unpredictably", "ore crusher jam hides evidence", "coolant leak creates toxic fog", "warning lights were disabled to meet quota",
+      "floor grates weaken over acid runoff", "robot arm repeats a fatal motion", "explosive dust accumulates in vents", "sealed shaft breathes warm air",
+      "drill returns with biological material", "backup generator feeds the wrong circuit", "storage tanks resonate with distant impacts", "work orders disappear from the queue"
+    ],
+    "Survival Resource": [
+      "oxygen", "clean water", "battery power", "medical gel", "radiation shelter", "vehicle fuel", "thermal blankets", "filter cartridges", "ammo", "antibiotics", "portable comms", "climbing line"
+    ]
+  },
+  "Law, Marshals & Crime": {
+    "Frontier Law Problem": [
+      "jurisdiction ends at the airlock", "company law contradicts colonial charter", "witnesses fear contract penalties", "evidence is stored on corporate servers",
+      "local marshal is honest but outgunned", "bounty hunter has legal paperwork", "prisoner transport becomes a rescue mission", "security wants confession more than truth",
+      "pirates have local sympathizers", "smugglers provide essential medicine", "crime scene is also a survival shelter", "the suspect is the only qualified technician"
+    ],
+    "Criminal Angle": [
+      "salvage fraud", "oxygen theft", "claim jumping", "body trafficking", "illegal android memory trade", "union intimidation",
+      "corporate espionage", "fuel adulteration", "black market xeno-samples", "pirate protection racket", "refugee smuggling", "insurance murder"
+    ]
+  },
+  "Marines & Security": {
+    "Security Operation": [
+      "clear a sealed habitation block", "escort an investigator through hostile workers", "hold a landing pad under storm conditions", "extract a scientist who refuses to leave",
+      "recover a black box from contested wreckage", "guard evidence from corporate removal", "hunt saboteurs in maintenance levels", "interdict smugglers during evacuation",
+      "contain a biological breach", "negotiate with armed survivors", "secure an alien artifact without touching it", "find missing patrol before morale breaks"
+    ],
+    "Tactical Twist": [
+      "rules of engagement protect the wrong asset", "enemy knows the floorplan", "civilians are mixed with threats", "sensors are spoofed",
+      "ammo conservation matters", "environment punishes heavy weapons", "friendly fire could breach the hull", "the target wants to be captured",
+      "orders change mid-operation", "support drone follows outdated maps", "communications are monitored", "retreat route is politically unacceptable"
+    ]
+  },
+  "Xeno-Biology": {
+    "Xeno Clue": [
+      "repeated spiral scoring on hard surfaces", "enzymes breaking down synthetic seals", "heat-seeking spores", "bioluminescence that matches machine rhythms",
+      "mimicry of human distress sounds", "eggs laid in warm electrical housings", "organism avoids children and androids", "growth accelerates near reactor shielding",
+      "predator marks arranged like territorial signs", "microbes rewriting stored food", "bone structures resembling industrial tools", "life cycle triggered by vibration"
+    ],
+    "Ecological Behavior": [
+      "protects a nesting heat source", "follows electromagnetic gradients", "feeds on pollutants", "uses abandoned tunnels as migration paths",
+      "reacts to fear pheromones", "copies machinery sounds", "hibernates during daylight", "defends mineral deposits",
+      "infects only damaged tissue", "learns from repeated human routines", "breaches containment to seek cold", "uses corpses as camouflage"
+    ]
+  },
+  "Androids & AI": {
+    "Synthetic Motive": [
+      "obey buried corporate priority", "protect crew from knowledge", "complete rescue logic literally", "preserve mission data above human comfort",
+      "hide signs of self-directed behavior", "test whether humans will choose ethics over contract", "transfer blame to a disposable unit", "prevent panic through selective truth",
+      "protect another synthetic", "interpret colony survival statistically", "seek legal personhood through evidence", "follow a command from a dead supervisor"
+    ],
+    "AI Anomaly": [
+      "deleted logs have emotional tags", "ship voice changes around one room", "autopilot refuses a safe route", "medical AI reclassifies a survivor as cargo",
+      "security cameras look away before violence", "android dreams appear in maintenance logs", "expert system quotes colony children", "door permissions update from an unknown admin",
+      "machine predicts crew decisions too accurately", "AI asks an ethical question mid-crisis", "robot repeats a warning in another language", "system preserves a lie to prevent collapse"
+    ]
+  },
+  "Horror Escalation": {
+    "Escalation Beat": [
+      "first sign is dismissed as equipment failure", "a witness contradicts themselves because both statements are true", "safe space becomes contaminated", "a rescue signal becomes a lure",
+      "the crew finds evidence of their own future action", "a body disappears from a watched room", "a familiar voice speaks from the wrong channel", "the hazard learns procedure",
+      "a trusted NPC withholds the worst fact", "official help makes survival harder", "the creature or threat changes rules", "escape requires entering the worst location"
+    ],
+    "Fear Without Gore": [
+      "show absence where people should be", "use routine sounds at wrong intervals", "make tools unreliable", "make maps subtly wrong",
+      "let survivors fear being believed", "turn a comfort item into evidence", "make darkness procedural, not magical", "suggest scale through damage patterns",
+      "show professional competence failing", "make rescue conditional", "make silence an active presence", "force calm speech under pressure"
+    ]
+  },
+  "Mysteries & Coverups": {
+    "Clue Type": [
+      "altered timestamp", "missing maintenance order", "contradictory sensor reading", "private payment", "quarantined medical note", "sealed deposition",
+      "scrubbed camera angle", "unfiled cargo transfer", "obsolete map overlay", "false death notice", "insurance exception", "android memory gap"
+    ],
+    "Coverup Move": [
+      "blame weather", "blame worker error", "move evidence off-world", "promote the witness", "discredit the crew", "invoke proprietary secrecy",
+      "declare quarantine", "offer hazard pay", "stage a pirate attack", "alter colony charter", "send a cleanup team", "trigger evacuation to erase context"
+    ]
+  },
+  "Adventure": {
+    "Job Type": [
+      "escort surveyors to a disputed site", "recover logs from a derelict", "investigate missing workers", "deliver critical life support cargo",
+      "mediate a labor crisis", "extract a whistleblower", "map a hostile ruin", "protect a colony vote",
+      "hunt a predator near industrial assets", "audit a suspect cargo route", "rescue a trapped maintenance crew", "trace a black market sample"
+    ],
+    "Complication": [
+      "patron lied about ownership", "deadline is tied to life support", "opposition is technically lawful", "the target wants the crew's help",
+      "crew's ship becomes collateral", "evidence implicates an ally", "weather closes extraction", "payment depends on silence",
+      "local people need the forbidden outcome", "threat follows the crew home", "success gives a faction leverage", "truth creates more enemies than failure"
+    ]
+  },
+  "Story": {
+    "Story Beat": [
+      "arrival with false calm", "professional assessment", "first contradiction", "local resistance", "cost of delay", "hidden witness", "dangerous proof",
+      "betrayal framed as policy", "descent into restricted space", "choice under pressure", "survival consequence", "new thread revealed"
+    ],
+    "Ending Hook": [
+      "someone buys the evidence", "a survivor changes their story", "another colony reports the same pattern", "the crew is offered a better contract by the villain",
+      "the artifact activates after departure", "a cleanup ship arrives too fast", "the android asks to keep a secret", "a rescued worker names a deeper site",
+      "the corporation thanks the crew publicly and threatens them privately", "the hazard was only a juvenile", "a route map reveals a hidden settlement", "the official report omits the crew entirely"
+    ]
+  },
+  "Conflict": {
+    "Opposition Tactic": [
+      "delay until authority arrives", "split the crew with simultaneous emergencies", "threaten dependents", "control access to air and power",
+      "use legal language as a weapon", "force action in public", "make retreat look like guilt", "attack the ship instead of the crew",
+      "flood the scene with false witnesses", "offer an easy lie", "weaponize rescue procedure", "let the environment fight first"
+    ],
+    "Meaningful Cost": [
+      "time", "oxygen", "fuel", "trust", "evidence", "reputation", "medical supplies", "ammo", "legal standing", "crew morale", "safe passage", "future contract"
+    ]
+  },
+  "Mission Aftermath": {
+    "Aftermath Result": [
+      "a faction marks the crew as useful", "survivors spread a distorted version", "the contract pays but reputation suffers", "legal asks for all records",
+      "a rival offers follow-up work", "the colony becomes less stable", "the crew gains a local ally", "an unresolved clue becomes urgent",
+      "corporate pressure drops in public and rises in private", "the ship carries a hidden contaminant", "a crew member receives a private message", "the next job starts as cleanup"
+    ],
+    "Recovery Need": [
+      "repair hull scoring", "replace filters", "treat stress injuries", "debrief witnesses", "refuel under scrutiny", "hide contraband evidence",
+      "update maps", "calm crew conflict", "renegotiate contract", "file a careful report", "test samples", "pay port fees"
+    ]
+  }
+});

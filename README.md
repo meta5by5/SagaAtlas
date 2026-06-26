@@ -286,3 +286,21 @@ Then open `http://localhost:8000/`. Opening `index.html` directly as `file:///..
 ### Entity relationship UI update
 - Relationship rows now show the related entity type immediately before the relationship description field.
 - Entity Directory filter row now includes an **Add New Entity** button using the Add to Journal icon.
+
+## 2026-06-24 top navigation audit
+- Fixed Crew Link workspace state blocking the Entities top-nav button.
+- Added a window-capture navigation reset so every top-nav button clears incompatible Crew/Entity workspace classes before opening its intended left, center, or right section.
+- Confirmed Documents top-nav opens the Documents tab in the right panel.
+
+
+## Campaign Intelligence Engine update
+
+This build keeps Saga Atlas local-first while upgrading the Scene Builder into a Campaign Intelligence Engine. The new Scene Director controls add a genre lens, scene mode, tone, guidance level, stakes focus, and pacing bias. The Generate Scene button now produces context-aware scenes with roleplay options, recommended next steps, clue/leverage prompts, consequence guidance, and campaign momentum adjustments.
+
+Oracle groups have been reorganized into friendlier categories: Core Solo, Story Director, Exploration, Space Operations, Characters & Society, Threats & Horror, and Legacy/General. New Hostile-compatible-in-tone oracle modules have been added without locking the app to a specific game system or protected setting names.
+
+## Oracle table browser/editor update
+- Each random table row now includes a clickable table name and 📋 button that opens a popup with the full option list.
+- The popup supports local editing, one option per line. Edits are stored in browser localStorage as table overrides and applied on reload.
+- `ORACLE_TABLE_ORDER.md` lists the current category/group/table structure with option counts so the groups can be reordered deliberately.
+- Scene Builder now includes Scene Oracle Context controls for faction pressure, district/zone, location detail, and mystery focus. These values are appended to Scene Director output so generated scenes connect to factions, districts, locations, mysteries, and roleplay decision points.
