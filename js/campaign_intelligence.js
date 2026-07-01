@@ -12,7 +12,8 @@
     if($('cieGenre')) return;
     const current=$('currentThread'); if(!current) return;
     const wrap=document.createElement('details'); wrap.id='campaignIntelligencePanel'; wrap.open=true; wrap.className='cie-panel';
-    wrap.innerHTML=`<summary>Campaign Intelligence Engine <span class="small">— Hostile-compatible in tone</span></summary>
+    wrap.innerHTML=`<summary>Campaign Intelligence Engine <span class="small">— advisor layer used by Story Director</span></summary>
+      <p class="small">Normal workflow: use <b>Story Director</b>. Open this advanced CIE panel only to tune the underlying genre lens, scene mode, stakes, pacing, or to request raw recommendations without the full Director package.</p>
       <div class="cie-grid">
         <label>Genre Lens<select id="cieGenre"><option>Hostile-compatible frontier sci-fi</option><option>Corporate space horror</option><option>Frontier law and trade</option><option>Exploration and first contact</option><option>Military rescue operation</option><option>Derelict salvage mystery</option></select></label>
         <label>Scene Mode<select id="cieMode"><option>Exploration mystery</option><option>Investigation</option><option>Social pressure</option><option>Survival hazard</option><option>Action / security operation</option><option>Trade and logistics</option><option>Horror escalation</option></select></label>

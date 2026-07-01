@@ -20,7 +20,7 @@ Use this as the reorder checklist for the Oracle UI. Counts reflect the current 
 - Recommended Next Step (16)
 - Momentum Adjustment (16)
 
-## ☠ Threats & Horror
+## ☠ Threats & Conflict
 
 ### Conflict
 - Opposition Tactic (12)

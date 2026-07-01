@@ -1,306 +1,289 @@
-# Saga Atlas
+# Increment 37 Rebuild — Stable Tabs
 
-Patch updates:
-- Comment editor formatting toolbar is on the same row as Roll, Clear, and Add Comment.
-- D6 result icon uses `33909.png` as `d6.png`; D10 uses `d10.jpg`.
-- Ship generator icon remains `11872755.png` as `ship-generator-icon.png`.
-- Multiple button rows are left-aligned.
-- Header remains compact from the prior patch.
-- Removed the visible `Table Output` heading to conserve space.
+This build rolls back to the known-good Increment 36 base and reapplies only the safe changes requested after the browser hang:
 
+- Middle-section buttons now behave as a true tab set: only the selected tab is visible.
+- Director State no longer remains visible when Journal, Scene Inspiration, Party, Colony, or Guide is selected.
+- Scene Editor tracker edit buttons are hidden/removed from the play surface. Trackers remain adjusted directly with their normal controls.
+- The unstable MutationObserver-based navigation patch from the prior Increment 37 has been removed to avoid browser lockups.
 
-Patch includes: ship icon update, entity overview/revealed toolbar buttons, entity directory filter, directory row alignment, Scene Elements rename, icon-only action buttons, unified journal/copy icons, collapse-oracles filter-row placement, and compact insert-image button styling.
+# Saga Atlas — Increment 29
 
+## What changed
 
-## File organization
+- Added **fresh entity-backed dropdown refresh** for Faction, Known Location, and Asset / Ship / Vehicle context selectors. Open/click/focus refreshes from the current Entity Library.
+- Strengthened the **Context Graph** so World/Planet, Biome/Environment, Development, Location Type, District/Zone, Encounter Site, Scene Inspiration, and Story Spine all read from one context model.
+- Added stricter sci-fi compatibility filtering. Examples: station/interior/vacuum contexts no longer offer primordial, wilderness, volcanic-field style paths unless the upstream context actually supports them.
+- Integrated more of the old Advanced/Legacy generator intent into the Story Director through **System Bridge / Short Session Flow**.
+- Added a first-pass system bridge for swapping rules procedures while keeping story continuity intact.
 
-This build uses root `index.html`, `css/style.css`, `js/app.js`, `js/tables.js`, and `img/` for icons and image assets.
+## System Bridge design
 
-## Added in this build
+The story remains system-neutral. The selected ruleset only changes what Saga Atlas emphasizes next.
 
-- Entity List left-side tab with filter and Show Editor button.
-- Drag entities from Entity List or Entity Directory into editors to insert an entity reference.
-- Type `@` in editors to open an entity picker and insert a reference.
+- **Genre Lens**: the fiction skin and tone, such as Hostile-compatible frontier sci-fi or space western exploration.
+- **Scene Mode**: how this scene should play at the table, such as exploration, negotiation, travel, downtime, or combat.
+- **Play Mode / Current Step**: the procedural game layer, such as a 5PFH campaign step, Starforged exploration beat, or freeform Story Director step.
+- **Primary Loop**: the dominant session structure, such as 5PFH Campaign Turn, Planetfall Colony Turn, Starforged Expedition, CWN Job Cycle, or Hostile-style contract operation.
+- **Roleplay Layer**: how uncertainty and social choices are handled, such as Starforged-style moves or light oracle prompts.
+- **Tactical Layer**: whether the scene should become a 5PFH tabletop battle, a theater-of-the-mind scene, or another tactical procedure.
+- **World Layer**: which setting toolkit frames the worldbuilding: Hostile-compatible, 5PFH, Planetfall, CWN, or Starforged.
+- **Colony / Base Layer**: optional worksheets for Planetfall colony progress, ship/base upkeep, or trade routes.
+- **Character Sheet Focus**: story-only, 5PFH crew stats, Starforged assets/moves, or hybrid roster.
 
+If settings conflict, Story Director preserves the story context and treats mechanics as optional procedure. For example, “Corporate survival horror” + “5PFH battle-focused session” + “Starforged-style moves” means the fiction stays grim/corporate, the encounter may be staged as a 5PFH tactical fight, and non-combat uncertainty can still use Starforged-style prompts.
 
-Update: Entity List is now the default left view; Entity Tracker uses a left-side directory and right-side editor without collapsing center/right panels.
+## 5PFH + Starforged structured play proposal
 
+The long-term goal is a **short-session guided flow**:
 
-## Patch notes
-- Entity Directory is the default left view.
-- Removed separate Entity List tab treatment.
-- Selecting an entity opens the Entity Editor as an overlay card across the center/right workspace while preserving the middle and right sections.
+1. Choose or continue current campaign objective.
+2. Run the appropriate 5PFH campaign step: upkeep, patron/job, travel/world event, battle setup, battle, post-battle, rivals/events, downtime.
+3. Use Story Director to convert the step into a playable scene.
+4. Use Starforged-style moves/oracles for roleplay, negotiation, travel uncertainty, vows/goals, and dramatic discoveries.
+5. If a tactical battle is chosen, export the scene as a 5PFH encounter package.
+6. After resolution, apply Story Engine consequences to trackers, entities, campaign state, colony worksheets, and journal reflection.
 
+## Future sheets / worksheets
 
-Update: Crew Link now spans the left and center workspace, Entity Tracker navigation was removed, and Entity Directory is presented as Entity Library in the left pane.
+Recommended next sheet models:
 
+- **5PFH Crew Sheet**: name, class/archetype, reactions, combat, toughness, savvy, speed, weapons, gear, injuries, XP, quirks, story tags.
+- **Starforged Character / Asset Sheet**: assets, momentum, health, spirit, supply, bonds, vows/progress tracks, move notes.
+- **Hybrid Crew Roster**: shared story identity plus separate rules panels.
+- **Planetfall Colony Sheet**: morale, integrity, resources, facilities, construction, exploration, exploitation, events, colony story track.
+- **Trade / Cargo Worksheet**: cargo, medical supplies, fuel, route, buyer, risk, legal status, rival interest.
 
-Patch: top navigation reordered to Entities, Crew, Journal, Oracle, Builder, Elements, Ship; Library renamed Entities; Journal/Scene Elements tabs moved to a right-aligned control row with the active label on the left.
+## Testing notes
 
+- Create a Faction entity, return to Story Director, then click the Faction dropdown. It should refresh without reloading the page.
+- Select Orbital Station → Station Interior. Development should rank station/artificial options and should not present Primordial as a coherent high-rank choice.
+- Use Play Mode = 5PFH Campaign Loop + Starforged RP and Current Step = Find Patron / Job. Scene Inspiration and Story Spine should preserve the same story context while indicating the procedural step.
 
-## Update: Sticky Header/Nav
-- Header and top navigation remain locked in place while scrolling.
-- Main workspace is kept aligned to the top when tabs/cards update.
-- Removed downward scroll jumps from navigation actions.
+## Increment 30 - Focused Story Director, Scene Inspiration, and Colony Worksheet
 
-## 2026-06-23 Document Library PDF Viewer
+This increment continues the Frictionless Empowerment design direction.
 
-This build reverts to the `hostilejournal-import-export-working-plus-entities` baseline and adds a native Document Library in the right-side Oracles panel.
+### Story Director focus selector
+Added an **I want to update...** dropdown at the top of Story Director. It narrows the visible controls to the kind of GM decision being made:
 
-- Use the right-panel **Documents** tab beside **Oracles**.
-- Upload one or more PDFs with **Upload PDF**.
-- PDFs are stored locally in the browser using IndexedDB, while the campaign JSON stores document metadata.
-- Click **Open** to show the PDF in an expanding viewer card over the left and middle workspace, leaving the right Oracles/Documents panel accessible.
-- Click **Open** in the viewer toolbar to launch the PDF in a browser tab, or **×** / Escape to close the overlay.
+- Storyline / current decision
+- Location / environment
+- Mood / danger level
+- Timers / tracker progress
+- Rules / play procedure
+- Colony / base sheet
+- Oracles / inspiration weighting
+- Show everything
 
-Note: browser PDF rendering depends on the built-in PDF viewer for the browser. Export Campaign JSON preserves document names/metadata, but the PDF binary files remain in local browser storage and should be re-uploaded if you move browsers/devices.
+This is intended to reduce dropdown overload while keeping controls quickly available. It does not remove the underlying Context Graph; it only changes what is visible.
 
-## PDF @ Links
+### Atmosphere moved out of the left-side environment controls
+Read-only Atmosphere Micro-Oracles are now shown as part of **Scene Inspiration**, so the left-side Environment card focuses on editable decisions while the middle/right Story Director outputs focus on play prompts.
 
-Rich text editors now support PDF references through the existing `@` mention popup. Upload PDFs in the right-side Documents tab, then type `@` in a rich editor and select a PDF document. The app prompts for a page number and inserts a clickable PDF link. Clicking the link opens the PDF viewer directly to that page when the browser PDF engine supports page anchors.
+### Planetfall-style colony worksheet stub
+Added a new **Colony** tab to the Story Director middle section. It includes an editable worksheet inspired by the Planetfall colony tracking flow: campaign turn, milestones, colony morale, colony integrity, build/research/story resources, raw materials, mission data, calamity points, grunts, notes, and a compact crew snapshot table.
 
+This is a local-first worksheet and does not yet automate Planetfall turn logic. It is meant as the first usable shell for short-session 5PFH + Starforged hybrid play.
 
-### Document Library update
-- PDFs now support comma-separated tags on upload and per-document tag editing.
-- Search matches PDF names and tags; tag chips filter groups of documents.
-- Duplicate uploads are skipped using the PDF filename and file size fingerprint.
-- `@` PDF links now replace the typed trigger text, preventing orphaned text such as `@colony-` before the inserted link.
+### Intended UX direction
+The Story Director should help the GM choose the type of decision they want to make, hide unrelated controls, then let the Context Graph, entities, oracles, and worksheets support that decision without taking ownership away from the GM.
 
-### Document Library list update
-- PDFs are sorted alphabetically by file name.
-- Size/date details are hidden to make the list denser.
-- Document rows use compact padding so more PDFs are visible at once.
+## Increment 31 — Focused GM Decisions and Center Dashboards
 
-## Document Library Guide and tag dropdown update
+- The **I want to update...** dropdown now acts as a stronger focus filter. It shows only the related Story Director cards instead of leaving most fields visible.
+- Read-only orientation data was moved out of the left decision flow and into center tabs:
+  - **Director State**: mission-control summary, campaign state, and atmosphere micro-oracles.
+  - **Party**: party resources, manual progress tracks, and timers.
+- The left Story Director panel is now reserved for editable GM decisions, matching the frictionless empowerment design goal.
+- The internal Party Dashboard tab in the left Story Director has been hidden so the same information is presented in the center area instead.
 
-- Document tag inputs now use the existing document tag catalog as suggestions.
-- Each uploaded PDF row includes an existing-tag dropdown for quickly adding tags already used by other documents.
-- The right panel now includes a Guide tab beside Oracles and Documents.
-- The Guide tab is a rich text editor saved in the Saga Atlas JSON/local state and supports the same @ document links used by journal/comment editors, including PDF page targets.
 
-### 2026-06-24 Guide navigation update
-- Moved the right-panel Guide tab between Oracles and Documents.
-- Added a center-section Guide tab to the left of Scene Elements.
-- Added a main navigation Guide button that opens the right-panel Guide tab.
-- The center Guide and right Guide share the same saved guide content.
-- Selecting right-panel Guide while the center Guide is active switches the center panel back to Journal.
-- Selecting center Guide while the right-panel Guide is active switches the right panel back to Oracles.
 
+## Increment 32 testing notes
+
+- The **I want to update...** selector now saves correctly and filters the visible Story Director fields instead of acting like a read-only label.
+- Read-only mission-control details such as **Now**, **Next beat**, **Focus**, **Pressure**, and the campaign-state values are centralized in the middle **Director State** tab.
+- **Party Dashboard** is now treated as a middle-section tab rather than a left-panel workflow tab.
+- **Generated Narrative Draft** was moved into **Scene Inspiration**, because it is creative output rather than a setup control.
+- **Suggest Oracles** now refreshes the oracle recommendation output instead of continually appending stale advice.
+- Added **Scene -1** and **Reset Scene #** controls beside the standard generator for correction during testing.
+
+### Button meanings
+
+- **What Happens Next?**: reads the current campaign/story context and proposes the next interesting development without formally starting a scene.
+- **Start Scene**: freezes the current context into a scene snapshot and identifies involved trackers/timers.
+- **Complete Scene**: opens the review workflow to apply consequences from the played scene back to master trackers and campaign state.
+- **Generate Story Package**: creates a structured package from the selected workflow, scale, and intent.
+- **Use Standard Scene Generator**: calls the original legacy generator for compatibility and quick random output; it increments the legacy scene log.
+
+## Increment 33 - Director State consolidation
+
+- Moved the remaining read-only mission-control rows into the center **Director State** tab, including **Now**, **Next beat**, **Focus**, and **Pressure**.
+- Merged the left-panel **Campaign State** values into the center **Director State > Campaign State** card without duplicating threat/heat/hope/mystery/resource/momentum rows.
+- Moved **Trackers in Current Scene** and **Open Threads** into the center **Director State** tab while retaining collapsible group behavior.
+- Left-side Story Director remains focused on editable GM decisions; read-only status information now lives in center tabs.
+- Strengthened the **I want to update...** selector event binding so the chosen focus mode persists and immediately filters the left-side decision cards.
+
+## Increment 34 - Advanced controls merged into Shaping the Situation
+
+- Merged the former **Advanced Engine / Compatibility Controls** fields into the **Shaping the Situation** card.
+- Added campaign/region, legacy scene intent, pacing, scene phase, threat, mystery, predictability, continuity toggles, mission seed, and world seed to the GM-facing decision workflow.
+- The old legacy generator controls are now hidden and synchronized from Story Director so older generator functions still receive compatible values.
+- Planet / World, Biome / Environment, Location Type, District / Zone, and Encounter Site remain in **Setting the Environment**, where they belong in the Context Graph.
+- Scene Intent and Pacing changes in Shaping the Situation also sync to Story Intent / Pacing values used by the Story Engine.
+
+## Increment 35 — Director State / scene lifecycle cleanup
+
+- Fixed Scene −1 / Reset Scene # to use the original app's Undo/Clear Log actions so the visible scene number and generated scene log stay in sync.
+- Moved the left-side Scene Inspiration content into the center **Director State** tab.
+- Added Scene Inspiration prompts, Story Spine, and Atmosphere Micro-Oracles to Director State so creative output and read-only context live together.
+- Made the center Party Dashboard editable with progress bars, +/- controls, editable names/notes/values/max values, and editable credits as currency.
+- Ensured Director State and Party Dashboard center tabs are hidden when Journal, Guide, or Scene Inspiration tabs are selected.
+- Clarified that Generate Story Package/What Happens Next/Start Scene should eventually become one scene lifecycle: preview → start/snapshot → complete/review.
 
-## 2026-06-24 Guide navigation tweak
-- Main navigation Guide now opens the right-panel Guide and resets the center Guide view back to Journal if it was active.
-- Center tab order changed to Journal, Guide, Scene Elements.
+## Increment 36 - Colony tab and lifeform encounter entities
 
-## 2026-06-24 Document display-name editing
-- Document rows now include a pencil button to edit the displayed document name.
-- Renaming changes the name shown in the document list, PDF viewer title, search results, and newly inserted @ PDF links without changing the stored PDF file/blob.
+- Moved the Planetfall-style **Colony Worksheet** out of the left Story Director tab flow and into its own middle-section **Colony** tab.
+- Added a new Entity type: **Encounters**.
+- Renamed **Lifeform Encounter Notes** to **Lifeforms Encountered**.
+- **Lifeforms Encountered** now lists Entity records where `type = Encounter` and the entity has the `#Lifeform` tag.
+- Added an **Add Lifeform Encounter** action that creates a new Encounter entity tagged `#Lifeform` and opens it in the Entity editor.
+- The full Encounters catalog remains available through the Entities directory, while the Colony worksheet only surfaces lifeform encounters for quick campaign/Planetfall reference.
 
-## Scroll position update
-- Center/right body tab buttons now keep the page pinned to the top.
-- Scene Elements, Journal, Guide, Oracles, and Documents tab switching no longer scrolls down to a rich text editor or active card.
+## Increment 38 - Safe attributes and oracle recommendation rebuild
+
+Built from the stable Increment 37 base to avoid the previous browser-freeze regression.
 
-## Scroll/focus fix update
-- Body section tab buttons now blur any active rich text editor before switching views.
-- Journal, Guide, and Scene Elements center buttons are hard-bound in capture phase to prevent duplicate default handlers from scrolling the page.
-- Center Guide button behavior restored while preserving the Guide/Oracles auto-switch behavior.
+Changes:
+- Lifeforms Encountered now requires Encounter entities to have both `#Lifeform` and `#Encountered` tags.
+- Added safe NPC attribute rows under the Entity name/type area.
+- Added editable Attribute Defaults under Settings > Entity Defaults.
+- Attribute rows support `Starforged method` and `d6 + attribute` roll types.
+- Attribute roll buttons use the existing bottom-right dice result card.
+- Dice result outcome text is smaller so labels such as Strong Hit fit the result box.
+- Director State: Campaign State is collapsible.
+- Director State: Scene Inspiration is placed below Trackers in Current Scene.
+- Suggest Oracles now recommends actual existing oracle table paths from the Oracle library instead of invented names.
 
-## Latest fix
-- Fixed the main navigation **Oracles** button so it opens the right-side Oracles tab directly and no longer leaves/activates the Entities card.
+Stability note:
+- This increment uses a single post-render patch file and avoids MutationObserver/render recursion loops.
+- It does not replace the entity renderer or center-tab controller wholesale.
 
-## Document Library `/assets/docs` sync
+## Saga Atlas v0.39.0 release notes
 
-The Document Library no longer uses the GitHub API or any token. **Sync Docs** reads from the `assets/docs` folder using `assets/index.json` relative to the running `index.html`. Local PDF uploads still save only to this browser's IndexedDB for offline viewing.
+Built from the stable Increment 38 baseline, with a conservative post-render patch to avoid the prior browser-freeze issue.
 
-Because browsers cannot reliably enumerate a static directory on every host, the sync supports two relative-site methods:
+### Added
+- Lifeforms Encountered now has tag filter checkboxes for `#Lifeform` and `#Encountered`, both enabled by default.
+- Mission Board / seed textareas auto-expand up to three rows.
+- Party Dashboard now includes a duplicate shared Colony Crew Snapshot.
+- Crew Snapshot name field maps to existing NPC entities tagged `#character`.
+- NPC entities tagged `#character` show a Crew Assignment panel under the Name area when assigned to a crew row.
+- Story Director Suggested Oracles output now lists actual existing Oracle paths from the Oracle tree.
+- Dice result summary text is smaller to fit result cards better.
 
-1. A static manifest file at `assets/index.json`, `assets/docs/docs.json`, or `assets/docs/manifest.json`.
-2. A plain directory listing at `assets/docs/` when the local/dev web server provides one.
-
-Recommended `assets/index.json` format:
-
-```json
-{
-  "files": [
-    {
-      "name": "temp.pdf",
-      "path": "assets/docs/temp.pdf",
-      "tags": ["temp", "reference"]
-    },
-    {
-      "name": "doc.pdf",
-      "path": "assets/docs/doc.pdf",
-      "tags": ["manual", "rules"]
-    }
-  ]
-}
-```
-
-A shorter form is also supported when you only need filenames:
-
-```json
-{
-  "files": ["temp.pdf", "doc.pdf"]
-}
-```
-
-Synced server documents appear in the Documents list even before a local PDF copy is stored in IndexedDB. Opening a synced document on a browser that does not have the PDF stored locally prompts the user to select the matching PDF file. Once attached, it can be viewed offline; a black down-arrow indicator marks documents with a local copy stored in this browser.
-
-## 2026-06-24 Docs sync refinement
-
-- Local/offline PDF documents now show a non-interactive black down-arrow indicator beside the edit button with the tooltip "File stored locally".
-- **Sync Docs** first tries to read a directory listing at `assets/docs/`, then merges anything found with `assets/index.json`.
-- Static hosts such as GitHub Pages generally do not allow browser JavaScript to rewrite `assets/index.json` or enumerate folders reliably. To keep the manifest updated, run this from the repository root after adding PDFs:
-
-```bash
-node scripts/build-docs-index.js
-```
-
-That script scans `assets/docs` and rewrites `assets/index.json` with every PDF found there.
-
-
-## Local testing note for Sync Docs
-
-Do not open `index.html` directly with a `file:///` URL when testing server-side docs. Modern browsers often block JavaScript `fetch()` calls to local files, so `assets/index.json` may not be readable.
-
-From the folder containing `index.html`, run one of these instead:
-
-```bash
-python -m http.server 8000
-```
-
-Then open:
-
-```text
-http://localhost:8000/
-```
-
-Place the manifest at:
-
-```text
-assets/index.json
-```
-
-Example:
-
-```json
-{
-  "files": [
-    {
-      "name": "Hostile - Alien Breeds",
-      "path": "Alien-Breeds3.pdf",
-      "tags": ["npc", "hostilerpg"]
-    },
-    {
-      "name": "colony-builder4.pdf",
-      "path": "colony-builder4.pdf",
-      "tags": ["colony", "rules"]
-    }
-  ]
-}
-```
-
-If the manifest is inside `assets/docs`, bare file names are preferred. The app also accepts full paths such as `assets/docs/Alien-Breeds3.pdf`.
-
-## Documents Sync Fix
-
-The **Sync Docs** button now reads `assets/index.json` relative to the same folder as `index.html` and adds each listed PDF to the Documents library as a server document.
-
-Server documents open in the embedded PDF viewer using their published path, such as:
-
-```text
-assets/docs/Alien-Breeds3.pdf
-```
-
-Use this format:
-
-```json
-{
-  "files": [
-    {
-      "name": "Hostile - Alien Breeds",
-      "path": "assets/docs/Alien-Breeds3.pdf",
-      "tags": ["npc", "hostilerpg"]
-    },
-    {
-      "name": "colony-builder4.pdf",
-      "path": "assets/docs/colony-builder4.pdf",
-      "tags": ["colony", "rules"]
-    }
-  ]
-}
-```
-
-For local testing, run from the app folder with:
-
-```bash
-python -m http.server 8000
-```
-
-Then open `http://localhost:8000/`. Opening `index.html` directly as `file:///...` may prevent the browser from reading `assets/index.json`.
-
-
-## 2026-06-24 Manifest Cleanup
-
-- The server document manifest now lives at `assets/index.json` instead of `assets/docs/index.json`.
-- PDF paths inside the manifest should still point to `assets/docs/<filename>.pdf`.
-- The build no longer includes `assets/docs/.gitkeep` or sample manifest files.
-- Imported migration JSON files are excluded from this build because they have already been imported.
-- The Documents library ignores non-PDF entries in the manifest.
-
-### 2026-06-24 Document search collapse
-- The Documents panel now shows **Search Documents** as a compact link-style toggle.
-- The search text field and tag filter chips are hidden until the link is opened.
-- Closing the search panel hides both the text field and tags list to reduce vertical space.
-
-### 2026-06-24 Document controls layout update
-- Moved **Sync Docs** and its help/status text from the Documents tab to **Settings → General**.
-- Documents tab now keeps only the local upload controls, search toggle, and document list.
-- **Upload PDF** and **Tags for next upload...** are compact and aligned on one row, with the tags field to the right of the upload button.
-
-## PDF Viewer session update
-
-- The embedded PDF viewer now supports multiple open PDF tabs inside the viewer card.
-- Each document remembers the last page opened or entered in the viewer page box.
-- When the app reloads after PDFs were left open, it asks whether to reopen those documents to their recent pages.
-- Browser PDF viewers do not expose scroll/current-page changes to JavaScript reliably, so the app remembers pages opened by links or entered in the viewer page field.
-
-
-## Document list display update
-
-- Server URL/path text is hidden in the Documents tab.
-- The local-file indicator is a non-interactive icon with tooltip: `File stored locally`.
-- The local-file indicator now appears to the left of the edit/tag/delete buttons.
-
-
-## 2026-06-24 Guide reset update
-
-- Starting a new campaign now clears `documentGuideHtml` and both Guide editors so the Guide does not carry over into the new campaign.
-
-## 2026-06-24 Baseline reapply patch
-
-- Fixed **Import Campaign JSON** to reliably import entities, journal entries, Guide HTML, and document library metadata from a campaign JSON file.
-- Added **Lore** as a native Entity Library group with Lore/History/Rumor/Mystery/Culture/Technology subtype options.
-- Local PDF blobs remain browser-local and are not embedded in Campaign JSON; imported document records open from server paths when available or prompt for a local copy.
-
-
-### Entity relationship UI update
-- Relationship rows now show the related entity type immediately before the relationship description field.
-- Entity Directory filter row now includes an **Add New Entity** button using the Add to Journal icon.
-
-## 2026-06-24 top navigation audit
-- Fixed Crew Link workspace state blocking the Entities top-nav button.
-- Added a window-capture navigation reset so every top-nav button clears incompatible Crew/Entity workspace classes before opening its intended left, center, or right section.
-- Confirmed Documents top-nav opens the Documents tab in the right panel.
-
-
-## Campaign Intelligence Engine update
-
-This build keeps Saga Atlas local-first while upgrading the Scene Builder into a Campaign Intelligence Engine. The new Scene Director controls add a genre lens, scene mode, tone, guidance level, stakes focus, and pacing bias. The Generate Scene button now produces context-aware scenes with roleplay options, recommended next steps, clue/leverage prompts, consequence guidance, and campaign momentum adjustments.
-
-Oracle groups have been reorganized into friendlier categories: Core Solo, Story Director, Exploration, Space Operations, Characters & Society, Threats & Horror, and Legacy/General. New Hostile-compatible-in-tone oracle modules have been added without locking the app to a specific game system or protected setting names.
-
-## Oracle table browser/editor update
-- Each random table row now includes a clickable table name and 📋 button that opens a popup with the full option list.
-- The popup supports local editing, one option per line. Edits are stored in browser localStorage as table overrides and applied on reload.
-- `ORACLE_TABLE_ORDER.md` lists the current category/group/table structure with option counts so the groups can be reordered deliberately.
-- Scene Builder now includes Scene Oracle Context controls for faction pressure, district/zone, location detail, and mystery focus. These values are appended to Scene Director output so generated scenes connect to factions, districts, locations, mysteries, and roleplay decision points.
+### Stability note
+This release avoids replacing the core render loop, tab controller, or Story Director reducer. The new behavior is applied as a guarded post-render enhancement to preserve browser stability.
+
+## Release v0.40.0 — Entity Template Engine
+
+This release begins the architecture shift from hard-coded character fields to configurable **Entity Templates**.
+
+### Added
+
+- **Entity Template Engine** under `Settings → Entity Defaults`.
+  - Template fields support: System, Field Name, Default Value, Roll Method, Side, Row, Sort Order, and Crew Snapshot visibility.
+  - Starforged and 5PFH templates are included by default.
+  - Each system supports a compact left/right, row 1/row 2 layout.
+- **Compact Character Stat Blocks** for NPC entities tagged `#character`.
+  - Starforged and 5PFH fields render above Crew Assignment on the Entity Tracker page.
+  - Fields are editable directly on the entity record.
+  - Dice buttons use the configured roll method.
+- **Roll Engine foundation**.
+  - Starforged fields roll action die + stat vs. two challenge dice.
+  - 5PFH-style fields roll d6 + attribute.
+  - Result card text was kept smaller so results such as “Strong hit” fit in the bottom-right card.
+- **Crew Snapshot renderer** shared by Party Dashboard and Colony.
+  - Crew rows use the same compact template renderer as the Entity page.
+  - Crew row layout comes from Entity Defaults.
+  - Name dropdown maps to NPC entities tagged `#character`.
+  - `Unassign` removes the crew row and entity link without deleting the NPC entity.
+- **Associated Asset / Ship relationship**.
+  - Current ship is not a fixed crew field.
+  - It is an associated `Asset` entity tagged `#starship`.
+  - This keeps ships, vehicles, bases, cargo, and future assets available to the Context Graph and oracle lookups as first-class campaign entities.
+
+### Milestones tracked
+
+- `v0.40` — Entity Template Engine — in progress.
+- `v0.50` — Context Graph Complete — planned.
+- `v0.60` — Story Engine and Consequences — planned.
+- `v0.70` — Journal 2.0 Reflection — planned.
+- `v1.0` — Connected Campaign Platform — planned.
+
+### Design note
+
+The design philosophy remains **Frictionless Empowerment**: game-system mechanics should act as swappable lenses over the same living story. Starforged, 5PFH, Hostile, Traveller, CWN, and future systems should be added through templates and roll engines instead of rewriting entity forms.
+
+
+## v0.40.1 Stability Fix
+
+This patch fixes the v0.40 browser refresh loop by making the Entity Template Engine patch idempotent and non-recursive:
+
+- Disconnects the MutationObserver while the patch renders its own panels.
+- Removes the periodic full refresh timer.
+- Ignores DOM mutations created by Saga v0.40 panels.
+- Saves stat field edits without re-rendering the active form on every keystroke.
+- Preserves the v0.40 template model: left/right groups, row 1/2 layout, Starforged and 5PFH fields, crew assignment, and #starship asset associations.
+
+Use this as the new stable v0.40 baseline before adding more template features.
+
+## Release v0.40.2 — Entity Template stabilization
+
+This release stabilizes the v0.40 Entity Template Engine before adding more systems.
+
+### What changed
+
+- Removed the old Increment 38 NPC Attributes script from the page load so there is only one stat/template owner.
+- Disabled the legacy v0.39 Crew Assignment renderer so Crew Assignment is shown only once by the v0.40 template system.
+- Disabled the old v0.39 Party Crew Snapshot renderer so the v0.40 shared Crew Snapshot renderer owns Party and Colony crew displays.
+- Reduced automatic re-rendering that made text selection difficult.
+- Character template panels and Crew Assignment panels now only rebuild when the active entity/template signature changes.
+- Add Track, Add Timer, and Add Condition now use the same compact button sizing as Start Scene, Complete Scene, and Suggest Oracles.
+- Entity Template Engine settings now sort fields by Row, then Order, then Side for deterministic layout.
+- The Entity Template Engine is now treated as the only source for Starforged / 5PFH fields; the older NPC Attributes editor is no longer used.
+
+### Testing notes
+
+- Open an NPC tagged #character and confirm only one stats section appears.
+- Confirm Crew Assignment appears once, below Game Systems.
+- Select text in Entity Tracker fields and confirm the page does not continually refresh/re-sort.
+- Open Settings → Entity Defaults and confirm the Entity Template Engine section is the only attributes configuration UI.
+- Change Row/Order in Entity Template Engine and confirm templates render in that sorted order after refresh/reopen.
+
+
+## SagaAtlas v0.40.3
+
+Stabilization and Entity Template cleanup release.
+
+Changes:
+- Removed the remaining Entity Tracker Crew Assignment display; crew links remain managed through the shared crew snapshot rows instead of a separate duplicate Entity panel.
+- Removed the visible Game Systems title/description from Entity Tracker; compact system stat blocks now render directly.
+- Reused the same compact Game Systems renderer in crew snapshots on Party/Colony views.
+- Normalized Add Track, Add Timer, and Add Condition button sizing to match Start Scene / Complete Scene / Suggest Oracles.
+- Kept template settings sorted by Row and Order for a deterministic compact sheet layout.
+- Added tab-click refresh hooks so the Party view receives the latest crew/template renderer without replacing the host navigation loop.
+
+Validation notes:
+- Confirm no Crew Assignment section appears under the Entity Tracker.
+- Confirm Starforged and 5PFH stat blocks appear under NPCs tagged #character.
+- Confirm Party tab shows the Colony Crew Snapshot with the same compact system stats when a #character NPC is selected.
+- Confirm text can be selected without page refresh/resort behavior.
+
+## v0.40.4
+- Added a top navigation **Party** button immediately before Crew using the Crew icon.
+- Added collapsible **Party Members** section to Party Dashboard.
+- Party Members lists NPC entities tagged `#character`, sorted by character name, and renders compact Game System statblocks for each.
+- Reduced Game System statblock label prominence so system names read as compact references instead of field labels.
+- Updated template script cache version to v0.40.4.

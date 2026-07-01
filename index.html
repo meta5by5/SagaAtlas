@@ -9,26 +9,27 @@
 <body>
   <header class="app-header"><div><h1>Saga Atlas</h1><p>Worldbuilding and Handbook Reader for Sci-fi settings.</p></div><div class="header-actions"><div class="status-pill" id="saveStatus">Loading…</div><button id="openSettings" class="settings-gear" type="button" title="Settings" aria-label="Open settings">⚙</button></div></header>
   <nav class="mobile-panel-tabs top-nav" aria-label="Panel controls">
+    <button id="openControlsPanel" type="button" aria-controls="controlsPanel" title="Director"><span class="top-nav-icon">🎞️</span><span class="top-nav-label">Director</span></button>
     <button id="openEntityListPanel" type="button" aria-controls="entityListPanel" title="Entities"><span class="top-nav-icon">☷</span><span class="top-nav-label">Entities</span></button>
+    <button id="openPartyPanel" type="button" aria-controls="outputPanel" title="Party"><img class="top-nav-icon-img" src="./img/crew-link-icon.png" alt=""><span class="top-nav-label">Party</span></button>
     <button id="openCrewLinkPanel" type="button" aria-controls="crewLinkPanel" title="Crew"><img class="top-nav-icon-img" src="./img/crew-link-icon.png" alt=""><span class="top-nav-label">Crew</span></button>
     <button id="showJournalNav" type="button" aria-controls="outputPanel" title="Journal"><span class="top-nav-icon">🖋</span><span class="top-nav-label">Journal</span></button>
     <button id="openOraclePanel" type="button" aria-controls="oraclePanel" title="Oracle"><span class="top-nav-icon">🎲</span><span class="top-nav-label">Oracle</span></button>
     <button id="openGuidePanel" type="button" aria-controls="oraclePanel" title="Guide"><span class="top-nav-icon">📖</span><span class="top-nav-label">Guide</span></button>
     <button id="openDocumentsPanel" type="button" aria-controls="oraclePanel" title="Documents"><img class="top-nav-icon-img" src="./img/local-doc-icon.png" alt=""><span class="top-nav-label">Docs</span></button>
-    <button id="openControlsPanel" type="button" aria-controls="controlsPanel" title="Builder"><span class="top-nav-icon">🎞️</span><span class="top-nav-label">Builder</span></button>
     <button id="showSceneElementsNav" type="button" aria-controls="outputPanel" title="Elements"><span class="top-nav-icon">▤</span><span class="top-nav-label">Elements</span></button>
-    <button id="openLivingShipPanel" type="button" aria-controls="livingShipPanel" title="Ship"><img class="top-nav-icon-img" src="./img/ship-generator-icon.png" alt=""><span class="top-nav-label">Ship</span></button>
+    <button id="openShipyardLink" type="button" title="Open Geomorph Shipyard"><img class="top-nav-icon-img" src="./img/ship-generator-icon.png" alt=""><span class="top-nav-label">Shipyard</span></button>
   </nav>
   <div id="panelBackdrop" class="panel-backdrop" hidden></div>
   <main class="layout">
-    <section id="controlsPanel" class="panel controls left-view side-panel side-left" aria-label="Scene Builder">
+    <section id="controlsPanel" class="panel controls left-view side-panel side-left" aria-label="Story Director">
       <div class="left-tabs" role="tablist" aria-label="Left section views">
-        <button class="left-tab-button" type="button" data-left-tab="scene" title="Scene Builder"><span class="tab-icon">🎞️</span><span class="tab-label">Scene Builder</span></button>
+        <button class="left-tab-button" type="button" data-left-tab="scene" title="Story Director"><span class="tab-icon">🎞️</span><span class="tab-label">Director</span></button>
         <button class="left-tab-button" type="button" data-left-tab="crew" title="Crew Link"><img class="tab-icon crew-logo-img" src="./img/crew-link-icon.png" alt=""><span class="tab-label">Crew Link</span></button>
-        <button class="left-tab-button" type="button" data-left-tab="living" title="Ship Generator"><img class="tab-icon ship-logo-img" src="./img/ship-generator-icon.png" alt=""><span class="tab-label">Ship Generator</span></button>
+        <button class="left-tab-button" type="button" data-left-tab="living" title="Shipyard"><img class="tab-icon ship-logo-img" src="./img/ship-generator-icon.png" alt=""><span class="tab-label">Shipyard</span></button>
         <button class="left-tab-button" type="button" data-left-tab="entityList" title="Entity Directory"><span class="tab-icon">☷</span><span class="tab-label">Entity Directory</span></button>
       </div>
-      <div class="panel-title-row"><h2>Scene Builder</h2><button class="close-panel secondary" type="button" data-close-panel>Close</button></div>
+      <div class="panel-title-row"><h2>Story Director</h2><button class="close-panel secondary" type="button" data-close-panel>Close</button></div>
       <label>Campaign / Region<input id="campaignName" placeholder="Frontier Reach, company route, colonial sector..."></label>
       <div class="grid2"><label>Planet<select id="planet"></select></label><label>Biome<select id="biome"></select></label></div>
       <div class="grid2"><label>Location Type<select id="locationType"></select></label><label>Immediate Surroundings<select id="surroundings"></select></label></div>
@@ -40,13 +41,13 @@
       <div class="button-row"><button id="generateMission" type="button" class="secondary">Mission Seed</button><button id="generateWorld" type="button" class="secondary">World Seed</button></div>
       <details open><summary>Continuity Rules</summary><div class="rules"><label><input id="useContinuity" type="checkbox">Reuse previous scene elements</label><label><input id="escalateOnComplication" type="checkbox">Escalate after complications</label><label><input id="useConflictArchitecture" type="checkbox">Add stakes, opposition logic, and meaningful choice</label><label>Mission Seed<textarea id="missionSeed" rows="4" placeholder="Generate or paste the current mission seed here for continuity reference."></textarea></label><label>World Seed<textarea id="worldSeed" rows="4" placeholder="Generate or paste the current world / colony seed here for continuity reference."></textarea></label></div></details>
     </section>
-    <section id="outputPanel" class="panel output" aria-label="Scene Elements and Journal">
+    <section id="outputPanel" class="panel output" aria-label="Scene Inspiration and Journal">
       <div class="center-top-row">
         <h2 id="centerSectionTitle">Journal</h2>
         <div class="center-tabs" role="tablist" aria-label="Center section tabs">
           <button id="showJournalTab" class="tab-button active" type="button">Journal</button>
           <button id="showCenterGuideTab" class="tab-button" type="button">Guide</button>
-          <button id="showOutputTab" class="tab-button" type="button">Scene Elements</button>
+          <button id="showOutputTab" class="tab-button" type="button">Scene Inspiration</button>
         </div>
         <div id="sceneTopActions" class="mini-buttons center-scene-actions" hidden>
           <button id="copyScene" class="secondary compact-button icon-button" type="button" title="Copy" aria-label="Copy scene output"><img class="button-inline-icon" src="./img/copy-icon.png" alt=""></button>
@@ -187,9 +188,9 @@
 
     <section id="crewLinkPanel" class="panel controls left-view crew-link-panel side-panel side-left" aria-label="Starforged Crew Link">
       <div class="left-tabs" role="tablist" aria-label="Left section views">
-        <button class="left-tab-button" type="button" data-left-tab="scene" title="Scene Builder"><span class="tab-icon">🎞️</span><span class="tab-label">Scene Builder</span></button>
+        <button class="left-tab-button" type="button" data-left-tab="scene" title="Story Director"><span class="tab-icon">🎞️</span><span class="tab-label">Director</span></button>
         <button class="left-tab-button active" type="button" data-left-tab="crew" title="Crew Link"><img class="tab-icon crew-logo-img" src="./img/crew-link-icon.png" alt=""><span class="tab-label">Crew Link</span></button>
-        <button class="left-tab-button" type="button" data-left-tab="living" title="Ship Generator"><img class="tab-icon ship-logo-img" src="./img/ship-generator-icon.png" alt=""><span class="tab-label">Ship Generator</span></button>
+        <button class="left-tab-button" type="button" data-left-tab="living" title="Shipyard"><img class="tab-icon ship-logo-img" src="./img/ship-generator-icon.png" alt=""><span class="tab-label">Shipyard</span></button>
         <button class="left-tab-button" type="button" data-left-tab="entityList" title="Entity Directory"><span class="tab-icon">☷</span><span class="tab-label">Entity Directory</span></button>
       </div>
       <div class="panel-title-row"><h2>Crew Link</h2><button class="close-panel secondary" type="button" data-close-panel>Close</button></div>
@@ -198,12 +199,12 @@
     </section>
     <section id="livingShipPanel" class="panel controls left-view living-ship-panel side-panel side-left" aria-label="Lynx-Class Ship Procedural Generator">
       <div class="left-tabs" role="tablist" aria-label="Left section views">
-        <button class="left-tab-button" type="button" data-left-tab="scene" title="Scene Builder"><span class="tab-icon">🎞️</span><span class="tab-label">Scene Builder</span></button>
+        <button class="left-tab-button" type="button" data-left-tab="scene" title="Story Director"><span class="tab-icon">🎞️</span><span class="tab-label">Director</span></button>
         <button class="left-tab-button" type="button" data-left-tab="crew" title="Crew Link"><img class="tab-icon crew-logo-img" src="./img/crew-link-icon.png" alt=""><span class="tab-label">Crew Link</span></button>
-        <button class="left-tab-button active" type="button" data-left-tab="living" title="Ship Generator"><img class="tab-icon ship-logo-img" src="./img/ship-generator-icon.png" alt=""><span class="tab-label">Ship Generator</span></button>
+        <button class="left-tab-button active" type="button" data-left-tab="living" title="Shipyard"><img class="tab-icon ship-logo-img" src="./img/ship-generator-icon.png" alt=""><span class="tab-label">Shipyard</span></button>
         <button class="left-tab-button" type="button" data-left-tab="entityList" title="Entity Directory"><span class="tab-icon">☷</span><span class="tab-label">Entity Directory</span></button>
       </div>
-      <div class="panel-title-row"><h2>🚀 Ship Generator</h2><button class="close-panel secondary" type="button" data-close-panel>Close</button></div>
+      <div class="panel-title-row"><h2>🚀 Shipyard</h2><button class="close-panel secondary" type="button" data-close-panel>Close</button></div>
       <p class="small">Browser version of a Foundry VTT-style ship generator: configure a ship preset, generate decks/zones/hazards, then copy or send it to the Journal for final editing.</p>
 
       <details open class="lynx-config-card">
@@ -233,9 +234,9 @@
     </section>
     <section id="entityTrackerPanel" class="panel controls left-view entity-tracker-panel side-panel side-left" aria-label="Entity Tracker">
       <div class="left-tabs" role="tablist" aria-label="Left section views">
-        <button class="left-tab-button" type="button" data-left-tab="scene" title="Scene Builder"><span class="tab-icon">🎞️</span><span class="tab-label">Scene Builder</span></button>
+        <button class="left-tab-button" type="button" data-left-tab="scene" title="Story Director"><span class="tab-icon">🎞️</span><span class="tab-label">Director</span></button>
         <button class="left-tab-button" type="button" data-left-tab="crew" title="Crew Link"><img class="tab-icon crew-logo-img" src="./img/crew-link-icon.png" alt=""><span class="tab-label">Crew Link</span></button>
-        <button class="left-tab-button" type="button" data-left-tab="living" title="Ship Generator"><img class="tab-icon ship-logo-img" src="./img/ship-generator-icon.png" alt=""><span class="tab-label">Ship Generator</span></button>
+        <button class="left-tab-button" type="button" data-left-tab="living" title="Shipyard"><img class="tab-icon ship-logo-img" src="./img/ship-generator-icon.png" alt=""><span class="tab-label">Shipyard</span></button>
         <button class="left-tab-button" type="button" data-left-tab="entityList" title="Entity Directory"><span class="tab-icon">☷</span><span class="tab-label">Entity Directory</span></button>
       </div>
       <div class="panel-title-row entity-title-row"><h2><span class="entity-icon entity-icon-tracker" aria-hidden="true">⬢</span> Entity Tracker</h2><div class="entity-title-actions"><button id="entityAddGeneric" class="secondary compact-button" type="button" title="Add entity">＋ Add entity</button><button class="close-panel secondary" type="button" data-close-panel>Close</button></div></div>
@@ -251,9 +252,9 @@
     </section>
     <section id="entityListPanel" class="panel controls left-view entity-list-panel active-left-view side-panel side-left" aria-label="Entity Directory">
       <div class="left-tabs" role="tablist" aria-label="Left section views">
-        <button class="left-tab-button" type="button" data-left-tab="scene" title="Scene Builder"><span class="tab-icon">🎞️</span><span class="tab-label">Scene Builder</span></button>
+        <button class="left-tab-button" type="button" data-left-tab="scene" title="Story Director"><span class="tab-icon">🎞️</span><span class="tab-label">Director</span></button>
         <button class="left-tab-button" type="button" data-left-tab="crew" title="Crew Link"><img class="tab-icon crew-logo-img" src="./img/crew-link-icon.png" alt=""><span class="tab-label">Crew Link</span></button>
-        <button class="left-tab-button" type="button" data-left-tab="living" title="Ship Generator"><img class="tab-icon ship-logo-img" src="./img/ship-generator-icon.png" alt=""><span class="tab-label">Ship Generator</span></button>
+        <button class="left-tab-button" type="button" data-left-tab="living" title="Shipyard"><img class="tab-icon ship-logo-img" src="./img/ship-generator-icon.png" alt=""><span class="tab-label">Shipyard</span></button>
         
         <button class="left-tab-button active" type="button" data-left-tab="entityList" title="Entity Directory"><span class="tab-icon">☷</span><span class="tab-label">Entity Directory</span></button>
       </div>
@@ -298,7 +299,7 @@
       <div class="sf-roll-outcome" id="sfToastOutcome">MISS</div>
     </article>
   </div>
-  <script src="./js/tables.js?v=20260625-cie"></script><script src="./js/app.js?v=20260625-cie"></script><script src="./js/campaign_intelligence.js?v=20260625-cie"></script><script src="./js/oracle_editor_scene_patch.js?v=20260625-oracle-edit"></script>
+  <script src="./js/tables.js?v=20260625-inc34"></script><script src="./js/app.js?v=20260625-inc34"></script><script src="./js/campaign_intelligence.js?v=20260625-inc34"></script><script src="./js/oracle_editor_scene_patch.js?v=20260625-inc34-oracle"></script>
 
 <style id="entity-library-add-arrow-patch">
   /* Recent entity row arrow/link styling */
@@ -552,5 +553,171 @@
     margin: 0 !important;
   }
 </style>
+
+<style id="saga-main-nav-restored-shipyard-patch">
+  .mobile-panel-tabs.top-nav button {
+    background: linear-gradient(180deg, rgba(38,48,66,.95), rgba(23,30,43,.95)) !important;
+    border: 1px solid var(--border, rgba(148,163,184,.35)) !important;
+    color: #eef2f8 !important;
+    box-shadow: 0 1px 0 rgba(255,255,255,.06) inset, 0 1px 2px rgba(0,0,0,.25) !important;
+  }
+  .mobile-panel-tabs.top-nav button:hover,
+  .mobile-panel-tabs.top-nav button:focus-visible {
+    background: linear-gradient(180deg, rgba(52,65,86,.98), rgba(30,41,59,.98)) !important;
+    border-color: var(--accent, #7dd3fc) !important;
+  }
+  .top-nav-icon, .top-nav-label { color: inherit !important; }
+  .top-nav-icon-img { filter: none; }
+  #livingShipPanel.active-left-view { display: flex !important; }
+  #livingShipPanel iframe { width:100%; min-height:68vh; border:1px solid var(--border, rgba(148,163,184,.35)); border-radius:.75rem; background:#0f172a; }
+  #livingShipPanel .shipyard-fallback { margin:.25rem 0 .5rem; }
+  .sd-narrative-draft { min-height: 180px; max-height: 420px; overflow:auto; padding: .75rem; border: 1px solid var(--border, rgba(148,163,184,.35)); border-radius: .65rem; background: rgba(15,23,42,.45); }
+  .sd-suggested-tracker { grid-template-columns: auto minmax(160px,1.3fr) minmax(80px,.8fr) auto auto; }
+  .sd-include-check { display:flex; align-items:center; gap:.35rem; font-size:.85rem; white-space:nowrap; }
+  .sd-suggested-fields input { width:100%; }
+  .sd-suggested-values { display:grid; grid-template-columns:1fr 1fr; gap:.4rem; margin-top:.25rem; }
+  .sd-suggested-values input { width:100%; }
+  .sd-track-actions button {
+    min-height: 1.08rem !important;
+    height: 1.08rem !important;
+    padding: .02rem .26rem !important;
+    line-height: .95 !important;
+    font-size: .68rem !important;
+    opacity: .82;
+  }
+  .sd-track-actions .sd-icon-edit {
+    width: .92rem;
+    height: .92rem;
+    display: block;
+  }
+  .sd-track-actions button:hover, .sd-track-actions button:focus-visible { opacity: 1; }
+  .sd-track-actions .oracle-table-edit { min-width: 1.08rem !important; width: 1.08rem !important; font-weight: 700; }
+  .sd-director-guide { margin: .5rem 0 .75rem; }
+  .sd-guide-grid { display:grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap:.5rem; padding:.5rem 0; }
+  .sd-guide-grid > div { border:1px solid var(--border, rgba(148,163,184,.28)); border-radius:.55rem; padding:.55rem; background:rgba(15,23,42,.35); }
+  .sd-advanced-note { margin:.45rem 0 .75rem; padding:.5rem .65rem; border-left:3px solid var(--accent, #7dd3fc); background:rgba(15,23,42,.35); }
+  @media (max-width: 760px){ .sd-suggested-tracker { grid-template-columns: 1fr; } .sd-guide-grid { grid-template-columns:1fr; } }
+</style>
+<script id="saga-shipyard-link-patch">
+(function(){
+  var SHIPYARD_URL = 'https://ivan.sanchezortega.es/geomorph-shipyard/';
+  function ensureShipyardFrame(){
+    var panel = document.getElementById('livingShipPanel');
+    if(!panel || panel.dataset.shipyardFrameReady === '1') return;
+    panel.dataset.shipyardFrameReady = '1';
+    var tabs = panel.querySelector('.left-tabs');
+    var title = panel.querySelector('.panel-title-row');
+    panel.innerHTML = '';
+    if(tabs) panel.appendChild(tabs);
+    if(title) {
+      var h = title.querySelector('h2');
+      if(h) h.textContent = '🚀 Shipyard';
+      panel.appendChild(title);
+    }
+    var p = document.createElement('p');
+    p.className = 'small shipyard-fallback';
+    p.innerHTML = '<a href="'+SHIPYARD_URL+'" target="_blank" rel="noopener noreferrer">Open Geomorph Shipyard in a new browser tab</a>';
+    panel.appendChild(p);
+    var frame = document.createElement('iframe');
+    frame.title = 'Geomorph Shipyard';
+    frame.src = SHIPYARD_URL;
+    frame.loading = 'lazy';
+    frame.referrerPolicy = 'no-referrer-when-downgrade';
+    panel.appendChild(frame);
+  }
+  function openShipyardPanel(){
+    ensureShipyardFrame();
+    try { if(typeof showLeftTab === 'function') showLeftTab('living'); } catch(e) {}
+    var panel = document.getElementById('livingShipPanel');
+    var controls = document.getElementById('controlsPanel');
+    var crew = document.getElementById('crewLinkPanel');
+    var ent = document.getElementById('entityListPanel');
+    [controls, crew, ent].forEach(function(x){ if(x) x.classList.remove('active-left-view'); });
+    if(panel) panel.classList.add('active-left-view');
+    if(window.state){ window.state.activeLeftTab='living'; try{ if(typeof saveState==='function') saveState(); }catch(e){} }
+    document.body.classList.add('side-panel-open');
+  }
+  function derivedLocation(){
+    var lt=document.getElementById('locationType');
+    var sr=document.getElementById('surroundings');
+    return [lt&&lt.value, sr&&sr.value].filter(Boolean).join(' — ');
+  }
+  function syncDirectorLocationFromLegacy(){
+    var loc=derivedLocation();
+    if(!loc) return;
+    try{
+      if(window.SagaStoryDirector && typeof window.SagaStoryDirector.setCurrentLocation === 'function'){
+        window.SagaStoryDirector.setCurrentLocation(loc);
+      }
+    }catch(e){}
+    var sdLoc=document.getElementById('sdLocation');
+    if(sdLoc) sdLoc.value=loc;
+  }
+  function keepStoryDirectorOpen(){
+    var c=document.getElementById('controlsPanel');
+    var e=document.getElementById('entityListPanel');
+    var crew=document.getElementById('crewLinkPanel');
+    var ship=document.getElementById('livingShipPanel');
+    if(c){ c.classList.add('active-left-view'); }
+    [e,crew,ship].forEach(function(p){ if(p) p.classList.remove('active-left-view'); });
+    if(window.state){ window.state.activeLeftTab='scene'; try{ if(typeof saveState==='function') saveState(); }catch(err){} }
+  }
+  function bind(){
+    ensureShipyardFrame();
+    var btn = document.getElementById('openShipyardLink');
+    if(btn && !btn.dataset.shipyardIframeBound){
+      btn.dataset.shipyardIframeBound = '1';
+      btn.addEventListener('click', function(ev){ ev.preventDefault(); ev.stopImmediatePropagation(); openShipyardPanel(); }, true);
+    }
+    document.querySelectorAll('[data-left-tab="living"]').forEach(function(b){
+      if(!b.dataset.shipyardIframeBound){
+        b.dataset.shipyardIframeBound='1';
+        b.addEventListener('click', function(){ setTimeout(openShipyardPanel,0); }, true);
+      }
+    });
+    ['locationType','surroundings'].forEach(function(id){
+      var el=document.getElementById(id);
+      if(el && !el.dataset.sdLocationSync){
+        el.dataset.sdLocationSync='1';
+        el.addEventListener('change', syncDirectorLocationFromLegacy);
+        el.addEventListener('input', syncDirectorLocationFromLegacy);
+      }
+    });
+    document.addEventListener('click', function(ev){
+      var btn=ev.target.closest && ev.target.closest('#storyDirectorDashboard button, #storyDirectorDashboard [data-sd-roll-oracle]');
+      if(!btn) return;
+      if(btn.closest && btn.closest('[data-sd-add-new-faction], #sdFaction')) return;
+      setTimeout(keepStoryDirectorOpen, 0);
+    }, true);
+
+    document.addEventListener('input', function(ev){
+      if(ev.target && (ev.target.id === 'entityName' || ev.target.id === 'entityType')){
+        setTimeout(function(){ try{ if(window.SagaStoryDirector && window.SagaStoryDirector.refreshFactionOptions) window.SagaStoryDirector.refreshFactionOptions(); }catch(e){} }, 75);
+      }
+    }, true);
+    document.addEventListener('change', function(ev){
+      if(ev.target && (ev.target.id === 'entityName' || ev.target.id === 'entityType')){
+        setTimeout(function(){ try{ if(window.SagaStoryDirector && window.SagaStoryDirector.refreshFactionOptions) window.SagaStoryDirector.refreshFactionOptions(); }catch(e){} }, 75);
+      }
+    }, true);
+    ['generateScene','advanceOnly','generateMission','generateWorld'].forEach(function(id){
+      var b=document.getElementById(id);
+      if(b && !b.dataset.sdStayBound){
+        b.dataset.sdStayBound='1';
+        b.addEventListener('click', function(){ syncDirectorLocationFromLegacy(); setTimeout(keepStoryDirectorOpen,0); }, true);
+      }
+    });
+  }
+  document.addEventListener('DOMContentLoaded', bind);
+  bind();
+  window.openShipyardPanel = openShipyardPanel;
+})();
+</script>
+
+  <script src="./js/story_director_dashboard.js?v=20260626-story-director"></script>
+  <script src="./js/story_director_phase_a.js?v=20260628-inc29-system-bridge-context"></script>
+  <script src="./js/increment37_stable_tabs.js?v=20260629-inc37-stable-tabs"></script>
+    <script src="./js/sagaatlas_v0_39_release.js?v=20260629-v0390"></script>
+  <script src="./js/sagaatlas_v0_40_entity_templates.js?v=20260629-v0404"></script>
 </body>
 </html>

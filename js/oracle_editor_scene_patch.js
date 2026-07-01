@@ -65,7 +65,7 @@
   }
   const layout=[
     {label:'⭐ Core Solo',children:['Core Oracles','Core Solo Engine','Campaign Intelligence Engine']},
-    {label:'☠ Threats & Horror',children:['Conflict','Miscellaneous','Mysteries & Coverups','Danger Situations','Horror Escalation','Fear and Dread']},
+    {label:'☠ Threats & Conflict',children:['Conflict','Miscellaneous','Mysteries & Coverups','Danger Situations','Horror Escalation','Fear and Dread']},
     {label:'📚 Story Beats',children:['Story','Adventure','Exploration','Missions','Mission Aftermath']},
     {label:'👥 Characters & Society',children:['Characters','Crew & NPCs','Corporate Powers','Frontier Society','Law, Marshals & Crime','Marines & Security','Factions']},
     {label:'📖 Story Director',children:['Campaign','Plot Engine','Conflict Architecture']},
